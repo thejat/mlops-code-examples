@@ -1,0 +1,7 @@
+archive
+*.pem
+.vscode
+*.pyc
+outputs
+inputs
+.ipynb_checkpoints
