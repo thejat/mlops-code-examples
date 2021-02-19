@@ -7,7 +7,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from sklearn.utils import shuffle
 
-
 class Loader():
     current = 0
 
@@ -109,22 +108,25 @@ def main():
     c_bias = 1e-6
     c_vector = 1e-6
     batchsize = 1024
+    num_epochs = 10
 
     model = MF(trainset.n_users, trainset.n_items,
                k=k, c_bias=c_bias, c_vector=c_vector)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    dataloader = Loader(train_x, train_y, batchsize=batchsize)
 
-    itr = 0
-    for batch in dataloader:
-        itr += 1
-        prediction = model(batch[0])
-        loss = model.loss(prediction, batch[1])
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
-        if itr % 100 == 0:
-            print(f"iteration: {itr}. training loss: {loss}")
+
+    for epoch in range(num_epochs):
+        dataloader = Loader(train_x, train_y, batchsize=batchsize)
+        itr = 0
+        for batch in dataloader:
+            itr += 1
+            prediction = model(batch[0])
+            loss = model.loss(prediction, batch[1])
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if itr % 100 == 0:
+                print(f"epoch: {epoch}. iteration: {itr}. training loss: {loss}")
 
     torch.save(model.state_dict(),
                "../data/models/recommendation_model_pytorch.pkl")
