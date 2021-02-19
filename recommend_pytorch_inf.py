@@ -51,7 +51,7 @@ def get_previously_seen(trainset, uid, movies_df):
 
 def main():
     # Data
-    movies_df = pd.read_csv('./movies.dat', sep="::",
+    movies_df = pd.read_csv('../data/ml-1m/movies.dat', sep="::",
                             header=None, engine='python')
     movies_df.columns = ['iid', 'name', 'genre']
     movies_df.set_index('iid', inplace=True)
@@ -59,13 +59,13 @@ def main():
     trainset = data.build_full_trainset()
     testset = trainset.build_anti_testset()
 
-    k = 30  # latent dimension
+    k = 100  # latent dimension
     c_bias = 1e-6
     c_vector = 1e-6
 
     model = MF(trainset.n_users, trainset.n_items,
                k=k, c_bias=c_bias, c_vector=c_vector)
-    model.load_state_dict(torch.load('./recommendation_model_pytorch.pkl'))
+    model.load_state_dict(torch.load('../data/models/recommendation_model_pytorch.pkl'))
     model.eval()
 
     # Print the recommended items for sample users

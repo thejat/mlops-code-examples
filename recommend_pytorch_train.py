@@ -103,12 +103,12 @@ def main():
     train_y = test_y = uir[:, 2].astype(np.float32)
 
     # Parameters
-    lr = 5e-2
-    k = 30  # latent dimension
+    lr = 5e-3
+    k = 100  # latent dimension
     c_bias = 1e-6
     c_vector = 1e-6
     batchsize = 1024
-    num_epochs = 10
+    num_epochs = 40
 
     model = MF(trainset.n_users, trainset.n_items,
                k=k, c_bias=c_bias, c_vector=c_vector)
