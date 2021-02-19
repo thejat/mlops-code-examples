@@ -4,4 +4,5 @@ archive
 *.pyc
 outputs
 inputs
+model-user.json
 .ipynb_checkpoints

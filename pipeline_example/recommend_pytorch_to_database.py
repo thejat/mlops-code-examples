@@ -15,7 +15,7 @@ def get_model_from_disk():
     data = surprise.Dataset.load_builtin('ml-1m')
     trainset = data.build_full_trainset()
     testset = trainset.build_anti_testset()
-    movies_df = pd.read_csv('../data/ml-1m/movies.dat',
+    movies_df = pd.read_csv('./movies.dat',
                             sep="::", header=None, engine='python')
     movies_df.columns = ['iid', 'name', 'genre']
     movies_df.set_index('iid', inplace=True)
@@ -27,7 +27,7 @@ def get_model_from_disk():
     model = MF(trainset.n_users, trainset.n_items,
                k=k, c_bias=c_bias, c_vector=c_vector)
     model.load_state_dict(torch.load(
-        '../data/models/recommendation_model_pytorch.pkl'))  # TODO: prevent overwriting
+        './recommendation_model_pytorch.pkl'))  # TODO: prevent overwriting
     model.eval()
 
     print('Model and data preloading completed in ', time.time()-start_time)
@@ -57,7 +57,7 @@ def upload_to_bigquery(df):
     #requires a credential file in the current working directory
     table_id = "movie_recommendation_service.predicted_movies"
     project_id = "authentic-realm-276822"
-    credentials = service_account.Credentials.from_service_account_file('model-user.json')
+    credentials = service_account.Credentials.from_service_account_file('./model-user.json')
     pandas_gbq.to_gbq(df, table_id, project_id=project_id, if_exists = 'replace', credentials=credentials)
 
 if __name__ == '__main__':
