@@ -6,3 +6,6 @@ outputs
 inputs
 model-user.json
 .ipynb_checkpoints
+*.log
+.DS_Store
+dev

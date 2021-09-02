@@ -57,7 +57,7 @@ def upload_to_bigquery(df):
     #requires a credential file in the current working directory
     table_id = "movie_recommendation_service.predicted_movies"
     project_id = "authentic-realm-276822"
-    credentials = service_account.Credentials.from_service_account_file('./model-user.json')
+    credentials = service_account.Credentials.from_service_account_file('../model-user.json')
     pandas_gbq.to_gbq(df, table_id, project_id=project_id, if_exists = 'replace', credentials=credentials)
 
 if __name__ == '__main__':
