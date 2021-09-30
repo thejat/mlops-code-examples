@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-replica-example
+  name: nginx-replica-example
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-replica-example
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-replica-example
+    spec:
+      containers:
+      - image: nginx:1.18.0
+        name: nginx-replica-example-k8s
+        resources: {}
+status: {}

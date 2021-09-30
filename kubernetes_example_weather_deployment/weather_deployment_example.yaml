@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: weather-minikube
+  name: weather-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-minikube
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: weather-minikube
+    spec:
+      containers:
+      - image: minikube_weather:latest
+        name: weather-service-k8s
+        resources: {}
+        imagePullPolicy: Never
+status: {}

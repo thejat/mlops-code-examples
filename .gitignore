@@ -12,3 +12,4 @@ dev
 *.pkl
 *.dat
 ab_testing_example/ml-1m
+*/ml-1m
