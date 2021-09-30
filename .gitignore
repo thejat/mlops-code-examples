@@ -9,3 +9,6 @@ model-user.json
 *.log
 .DS_Store
 dev
+*.pkl
+*.dat
+ab_testing_example/ml-1m
