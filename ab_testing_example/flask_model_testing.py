@@ -1,10 +1,16 @@
+import sys
+SYS_PATH_PREFIX = '/home/theja/Sync/uic/teach/'
+sys.path.append(SYS_PATH_PREFIX + 'mlops-code/model_example_recommendation_pytorch') # for model definitions
+sys.path.append(SYS_PATH_PREFIX + 'mlops-data/ml-1m') # for metadata
+sys.path.append(SYS_PATH_PREFIX + 'mlops-data/models') # for the pytorch model
+# TODO: improve by making a package
+
 from recommend_pytorch_train import MF
 from recommend_pytorch_inf import get_top_n, get_previously_seen
 import torch
-import pandas as pd
 import surprise
+import pandas as pd
 import time
-
 import random
 from uuid import uuid4
 from flask import (
@@ -31,35 +37,38 @@ class ModelExperiment(SimpleExperiment):
             params.model_type = 'pytorch2'
 
 
-app = Flask(__name__)
 
 start_time = time.time()
 
-# data preload
+
+# Metadata preload
+movies_df = pd.read_csv('movies.dat',
+                        sep="::", header=None, engine='python',
+                        encoding="iso-8859-1")
+movies_df.columns = ['iid', 'name', 'genre']
+movies_df.set_index('iid', inplace=True)
 data = surprise.Dataset.load_builtin('ml-1m')
 trainset = data.build_full_trainset()
 testset = trainset.build_anti_testset()
-movies_df = pd.read_csv('./movies.dat',
-                        sep="::", header=None, engine='python')
-movies_df.columns = ['iid', 'name', 'genre']
-movies_df.set_index('iid', inplace=True)
 
-# model preload
+
+
+# Model preload
 k = 100  # latent dimension
 c_bias = 1e-6
 c_vector = 1e-6
 model = MF(trainset.n_users, trainset.n_items,
            k=k, c_bias=c_bias, c_vector=c_vector)
 model.load_state_dict(torch.load(
-    './recommendation_model_pytorch.pkl'))  # TODO: prevent overwriting
+    'recommendation_model_pytorch.pkl'))
 model.eval()
 
 print('Model and data preloading completed in ', time.time()-start_time)
-
-
 model1 = model  # for demo purposes, both models are the same
 model2 = model
 
+
+app = Flask(__name__)
 app.config.update(dict(
     DEBUG=True,
     SECRET_KEY='MODEL_TESTING_BY_THEJA_TULABANDHULA',
