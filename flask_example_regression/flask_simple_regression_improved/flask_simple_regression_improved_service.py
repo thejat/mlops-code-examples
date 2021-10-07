@@ -9,7 +9,7 @@ def get_model(b, A):
 
 
 model_params = pickle.load(
-    open('../../data/models/simple_regression.pkl', 'rb'))
+    open('/home/theja/teach/mlops-data/models/simple_regression.pkl', 'rb'))
 model = get_model(model_params[0], model_params[1])
 
 

@@ -17,7 +17,7 @@ data = surprise.Dataset.load_builtin('ml-1m')
 trainset = data.build_full_trainset()
 testset = trainset.build_anti_testset()
 movies_df = pd.read_csv('./movies.dat',
-                        sep="::", header=None, engine='python')
+                        sep="::", header=None, engine='python', encoding="iso-8859-1")
 movies_df.columns = ['iid', 'name', 'genre']
 movies_df.set_index('iid', inplace=True)
 
