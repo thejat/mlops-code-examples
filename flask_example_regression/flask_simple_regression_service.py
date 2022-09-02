@@ -8,8 +8,7 @@ def get_model(b, A):
     return line
 
 
-model_params = pickle.load(
-    open('../data/models/simple_regression.pkl', 'rb'))
+model_params = [2,2]
 model = get_model(model_params[0], model_params[1])
 
 
