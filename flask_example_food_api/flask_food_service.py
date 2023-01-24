@@ -29,6 +29,9 @@ def food():
         img_str= f"""
                       <img src="{data["response"]['image']}" alt="Random Food" width="500" height="600"> 
                  """
+    else:
+        img_str= "Food API failed"
+        
     return f"""
                 <!doctype html>
                 <html>
