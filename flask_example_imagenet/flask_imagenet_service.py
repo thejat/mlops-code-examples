@@ -64,7 +64,7 @@ from flask import Flask, jsonify, request
 
 
 app = Flask(__name__)
-imagenet_class_index = json.load(open('../data/imagenet/imagenet_class_index.json'))
+imagenet_class_index = json.load(open('./imagenet_class_index.json'))
 model = models.densenet121(pretrained=True)
 model.eval()
 

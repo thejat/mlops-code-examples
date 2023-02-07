@@ -113,7 +113,7 @@ def get_prediction(image_bytes):
 
 
 model = get_model()
-imagenet_class_index = json.load(open('../data/imagenet/imagenet_class_index.json'))
+imagenet_class_index = json.load(open('../imagenet_class_index.json'))
 
 app = Flask(__name__)
 
