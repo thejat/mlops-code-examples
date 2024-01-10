@@ -6,7 +6,6 @@
 
 #### Additional Information
 
-  - The latest version of the course was offered in Fall 2021.
   - Audience: Enthusiastic business analysts with beginning python programming experience.
 
 #### Setting the Data Path
