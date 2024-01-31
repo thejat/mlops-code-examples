@@ -12,6 +12,7 @@ def hello():
 
 @app.route("/mypredict", methods=["GET"])
 def predict():
+    # check if x is in the arguments
     if "x" in request.args:
         try:
             return jsonify({'input': request.args['x'],
