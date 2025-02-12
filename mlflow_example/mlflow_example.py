@@ -1,11 +1,9 @@
 import mlflow
 from mlflow.models import infer_signature
-
-import pandas as pd
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score
 
 
 # Load the Iris dataset
@@ -19,7 +17,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Define the model hyperparameters
 params = {
     "solver": "lbfgs",
-    "max_iter": 1000,
+    "max_iter": 10,
     "multi_class": "auto",
     "random_state": 8888,
 }
@@ -39,7 +37,7 @@ accuracy = accuracy_score(y_test, y_pred)
 mlflow.set_tracking_uri(uri="http://127.0.0.1:8080")
 
 # Create a new MLflow Experiment
-mlflow.set_experiment("MLflow Quickstart")
+mlflow.set_experiment("MLops Course")
 
 # Start an MLflow run
 with mlflow.start_run():
