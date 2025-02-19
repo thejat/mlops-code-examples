@@ -1,3 +1,0 @@
-scikit-surprise
-pandas
-pandas_gbq

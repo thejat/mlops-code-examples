@@ -1,16 +1,55 @@
+# Ignore archive files
 archive
+
+# Ignore private key files
 *.pem
+
+# Ignore VSCode settings
 .vscode
+
+# Ignore Python bytecode files
 *.pyc
+__pycache__/
+
+# Ignore output and input directories
 outputs
 inputs
+
+# Ignore specific model files
 model-user.json
+
+# Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints
+
+# Ignore log files
 *.log
+
+# Ignore macOS system files
 .DS_Store
+
+# Ignore development directories
 dev
+
+# Ignore pickle and data files
 *.pkl
 *.dat
-ab_testing_example/ml-1m
-*/ml-1m
+
+# Ignore specific directories
+mlruns
+mlartifacts
+ml-1m
+
+# Ignore environment files
 .env
+
+# Ignore virtual environment directories
+venv/
+.env/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Ignore temporary files created by editors
+*.swp
+*~

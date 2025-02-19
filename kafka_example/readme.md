@@ -10,30 +10,7 @@ Ensure you have the following installed on your machine:
 
 ## Setup Instructions
 
-1. **Clone the repository** or create the following `docker-compose.yml` file in your project directory:
-
-    ```yaml
-    services:
-      zookeeper:
-        image: 'confluentinc/cp-zookeeper:latest'
-        environment:
-          ZOOKEEPER_CLIENT_PORT: 2181
-          ZOOKEEPER_TICK_TIME: 2000
-        ports:
-          - "2181:2181"
-
-      kafka:
-        image: 'confluentinc/cp-kafka:latest'
-        depends_on:
-          - zookeeper
-        environment:
-          KAFKA_BROKER_ID: 1
-          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        ports:
-          - "9092:9092"
-    ```
+1. **Clone the repository** using git clone and navigate to kafka example directory.
 
 2. **Start the Services**:
 
