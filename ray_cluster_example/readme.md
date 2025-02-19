@@ -29,7 +29,8 @@ Make sure you have the following installed on your system:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ray_cluster_example.git
+git clone https://github.com/thejat/mlops-code-examples.git
+cd mlops-code-examples
 cd ray_cluster_example
 ```
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 To run the script inside the head node container:
 
 ```bash
-docker exec -it ray-head python /app/example.py
+docker exec -it ray_cluster_example-ray-head-1 python /app/example.py
 ```
 
 This will distribute the computation across the Ray cluster and return the results.
