@@ -1,0 +1,36 @@
+==================================================
+MLflow Tracking - Minimal Working Example
+==================================================
+
+📊 Loading Iris dataset...
+   Training samples: 120
+   Test samples: 30
+
+🔵 Started MLflow run: a1b2c3d4...
+
+📝 Logging parameters...
+   n_estimators: 100
+   max_depth: 5
+   random_state: 42
+
+🏋️ Training RandomForest classifier...
+   Training completed in 0.15 seconds
+
+📈 Evaluating model...
+   Accuracy: 1.0000
+   F1 Score: 1.0000
+
+📊 Logging metrics...
+
+💾 Logging model artifact...
+   Model saved to: model/
+
+==================================================
+✅ Training complete! Run logged to MLflow.
+==================================================
+
+🔗 Run ID: a1b2c3d4e5f6789...
+
+👀 To view results, run:
+   mlflow ui --port 5000
+   Then open http://localhost:5000

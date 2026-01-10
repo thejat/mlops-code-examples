@@ -1,0 +1,13 @@
+# LLM Benchmark MWE Dependencies
+# Python 3.10+ required
+
+# Async HTTP client for concurrent requests
+aiohttp==3.9.1
+
+# Standard library modules used (no install needed):
+# - asyncio
+# - argparse
+# - statistics
+# - json
+# - time
+# - dataclasses

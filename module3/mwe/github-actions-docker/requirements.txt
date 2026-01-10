@@ -1,0 +1,4 @@
+# GitHub Actions Docker MWE - Minimal dependencies
+# Only PyYAML is needed to parse workflow files
+
+PyYAML==6.0.1

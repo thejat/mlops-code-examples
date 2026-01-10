@@ -1,0 +1,50 @@
+# Example GitHub Actions workflow for model validation
+# Copy this to .github/workflows/train_and_validate.yml
+
+name: Train and Validate Model
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Train model
+        run: python train.py
+      
+      - name: Validate model
+        run: |
+          python validate.py \
+            --min-accuracy 0.90 \
+            --min-f1 0.85
+      
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: validation_report.json
+      
+      - name: Upload metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics
+          path: metrics.json

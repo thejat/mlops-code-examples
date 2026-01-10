@@ -1,0 +1,48 @@
+============================================================
+RAY MAP-REDUCE: Distributed Word Count Example
+============================================================
+
+[1/4] Initializing Ray...
+  Ray initialized with 8 CPUs
+
+[2/4] Submitting 5 batches for parallel processing...
+
+[3/4] Waiting for workers to complete...
+  [Worker] Processing batch 0...
+  [Worker] Processing batch 1...
+  [Worker] Processing batch 2...
+  [Worker] Processing batch 3...
+  [Worker] Processing batch 4...
+  [Worker] Batch 2 complete: 7 words, 7 unique
+  [Worker] Batch 0 complete: 9 words, 8 unique
+  [Worker] Batch 1 complete: 7 words, 7 unique
+  [Worker] Batch 3 complete: 10 words, 8 unique
+  [Worker] Batch 4 complete: 7 words, 7 unique
+  All 5 batches processed in 0.58s
+
+[4/4] Reducing results...
+
+============================================================
+RESULTS: Top 10 Most Frequent Words
+============================================================
+  the               6 ██████
+  fox               2 ██
+  dog               2 ██
+  and               2 ██
+  distributed       2 ██
+  for               2 ██
+  quick             1 █
+  brown             1 █
+  jumps             1 █
+  over              1 █
+
+Total unique words: 30
+Total word occurrences: 40
+
+Ray shutdown complete.
+============================================================
+
+---
+NOTE: The order of "[Worker] Processing batch X..." lines may vary due to 
+parallel execution. The worker completion order also varies. The final 
+word counts and totals should be consistent across runs.

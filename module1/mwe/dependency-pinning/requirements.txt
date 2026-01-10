@@ -1,0 +1,4 @@
+# Pinned dependencies for reproducibility demonstration
+# These exact versions ensure identical numerical results across machines
+
+numpy==1.24.3

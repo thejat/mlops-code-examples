@@ -1,0 +1,84 @@
+============================================================
+Multi-Tool Agent MWE
+============================================================
+
+============================================================
+Task 1: What is RAG?
+============================================================
+Query: What is RAG?
+Duration: 0.15ms
+----------------------------------------
+💭 Thought: Analyzing query: 'What is RAG?'
+🔀 Route: retrieval - Query appears to seek information from knowledge base
+🔧 Action: retrieval <- What is RAG?
+👁 Observation: {'answer': 'RAG (Retrieval-Augmented Generation) combines retrieval with generation to pr...
+✅ Answer: RAG (Retrieval-Augmented Generation) combines retrieval with generation to pr...
+
+============================================================
+Task 2: Explain vector databases
+============================================================
+Query: Explain vector databases
+Duration: 0.12ms
+----------------------------------------
+💭 Thought: Analyzing query: 'Explain vector databases'
+🔀 Route: retrieval - Query appears to seek information from knowledge base
+🔧 Action: retrieval <- Explain vector databases
+👁 Observation: {'answer': 'Vector databases store embeddings and enable fast similarity search using al...
+✅ Answer: Vector databases store embeddings and enable fast similarity search using al...
+
+============================================================
+Task 3: How does document chunking work?
+============================================================
+Query: How does document chunking work?
+Duration: 0.10ms
+----------------------------------------
+💭 Thought: Analyzing query: 'How does document chunking work?'
+🔀 Route: retrieval - Query appears to seek information from knowledge base
+🔧 Action: retrieval <- How does document chunking work?
+👁 Observation: {'answer': 'Document chunking splits text into segments suitable for embedding. Common a...
+✅ Answer: Document chunking splits text into segments suitable for embedding. Common a...
+
+============================================================
+Task 4: Tell me about agentic AI systems
+============================================================
+Query: Tell me about agentic AI systems
+Duration: 0.11ms
+----------------------------------------
+💭 Thought: Analyzing query: 'Tell me about agentic AI systems'
+🔀 Route: retrieval - Query appears to seek information from knowledge base
+🔧 Action: retrieval <- Tell me about agentic AI systems
+👁 Observation: {'answer': 'Agentic AI systems can reason about tasks, select tools, and execute multi-s...
+✅ Answer: Agentic AI systems can reason about tasks, select tools, and execute multi-s...
+
+============================================================
+Task 5: Summarize the key points
+============================================================
+Query: Summarize the key points
+Duration: 0.08ms
+----------------------------------------
+💭 Thought: Analyzing query: 'Summarize the key points'
+🔀 Route: summarize - Query contains 'summarize' and context available
+🔧 Action: summarize <- Summarize the key points
+👁 Observation: {'summary': 'Summary (Summarize the key points): Agentic AI systems can reason about ta...
+✅ Answer: Summary (Summarize the key points): Agentic AI systems can reason about ta...
+
+============================================================
+Task 6: Give me a brief overview
+============================================================
+Query: Give me a brief overview
+Duration: 0.09ms
+----------------------------------------
+💭 Thought: Analyzing query: 'Give me a brief overview'
+🔀 Route: summarize - Query contains 'brief' and context available
+🔧 Action: summarize <- Give me a brief overview
+👁 Observation: {'summary': 'Summary (Give me a brief overview): Agentic AI systems can reason about ta...
+✅ Answer: Summary (Give me a brief overview): Agentic AI systems can reason about ta...
+
+============================================================
+EVALUATION REPORT
+============================================================
+Total tasks: 6
+Tool distribution: {'retrieval': 4, 'summarize': 2}
+Average latency: 0.11ms
+Min latency: 0.08ms
+Max latency: 0.15ms

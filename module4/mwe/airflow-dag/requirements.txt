@@ -1,0 +1,4 @@
+# Airflow DAG MWE - Minimal Dependencies
+# Install with: pip install -r requirements.txt
+
+apache-airflow==2.8.1

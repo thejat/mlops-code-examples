@@ -1,0 +1,5 @@
+# No external dependencies required
+# This MWE uses only Python standard library:
+# - asyncio (async/await patterns)
+# - dataclasses (request structure)
+# - typing (type hints)

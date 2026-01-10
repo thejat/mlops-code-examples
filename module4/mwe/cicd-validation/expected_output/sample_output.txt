@@ -1,0 +1,44 @@
+===== TRAINING OUTPUT =====
+
+$ python train.py
+
+==================================================
+Training Model for Validation Demo
+==================================================
+
+📊 Loading Iris dataset...
+🏋️ Training RandomForest classifier...
+📈 Evaluating model...
+
+✅ Training complete!
+   Accuracy: 1.0000
+   F1 Score: 1.0000
+
+💾 Metrics saved to: metrics.json
+
+
+===== PASSING VALIDATION =====
+
+$ python validate.py --min-accuracy 0.90 --min-f1 0.85
+
+=== Model Validation Report ===
+✓ PASS: accuracy = 1.0000 (threshold: 0.9000)
+✓ PASS: f1_score = 1.0000 (threshold: 0.8500)
+
+Overall: PASSED
+Validation report saved to: validation_report.json
+
+
+===== FAILING VALIDATION (strict thresholds) =====
+
+$ python validate.py --min-accuracy 0.99 --min-f1 0.99
+
+=== Model Validation Report ===
+✗ FAIL: accuracy = 0.9667 (threshold: 0.9900)
+✗ FAIL: f1_score = 0.9665 (threshold: 0.9900)
+
+Overall: FAILED
+Validation report saved to: validation_report.json
+
+$ echo $?
+1

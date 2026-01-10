@@ -1,0 +1,26 @@
+=== Dynamic Request Batching Demo ===
+
+[Batch 1] Processing 4 requests together
+  Client 0 received: Response to 'Query from client 0' (batch 1)
+  Client 1 received: Response to 'Query from client 1' (batch 1)
+  Client 2 received: Response to 'Query from client 2' (batch 1)
+  Client 3 received: Response to 'Query from client 3' (batch 1)
+[Batch 2] Processing 4 requests together
+  Client 4 received: Response to 'Query from client 4' (batch 2)
+  Client 5 received: Response to 'Query from client 5' (batch 2)
+  Client 6 received: Response to 'Query from client 6' (batch 2)
+  Client 7 received: Response to 'Query from client 7' (batch 2)
+[Batch 3] Processing 2 requests together
+  Client 8 received: Response to 'Query from client 8' (batch 3)
+  Client 9 received: Response to 'Query from client 9' (batch 3)
+
+=== Summary ===
+Total requests: 10
+Batches processed: 3
+Average batch size: 3.3
+
+---
+Note: Output order may vary slightly due to async timing, but all 10
+requests should be processed in 2-3 batches (depending on arrival timing).
+The key observation is that multiple requests are grouped together,
+reducing the number of simulated "model loads" from 10 to ~3.

@@ -1,0 +1,13 @@
+# Multi-Tool Agent MWE Dependencies
+# This MWE uses no external dependencies for demonstration purposes.
+# Replace mock tools with real implementations using these packages:
+
+# For real RAG implementation:
+# langchain>=0.1.0
+# langchain-community>=0.0.10
+# sentence-transformers>=2.2.2
+# faiss-cpu>=1.7.4
+
+# For real LLM-based routing:
+# transformers>=4.35.0
+# torch>=2.0.0

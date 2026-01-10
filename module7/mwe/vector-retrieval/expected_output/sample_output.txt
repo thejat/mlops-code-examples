@@ -1,0 +1,45 @@
+============================================================
+Vector Retrieval MWE - Semantic Search Demo
+============================================================
+
+[1] Loading embedding model...
+    Model: all-MiniLM-L6-v2 (dimension: 384)
+    Load time: 1.23s
+
+[2] Creating document embeddings...
+    Documents indexed: 10
+    Embedding shape: (10, 384)
+    Embedding time: 0.045s
+
+[3] Building FAISS index...
+    Index type: IndexFlatL2 (exact search)
+    Vectors in index: 10
+    Index build time: 0.0002s
+
+[4] Running semantic search queries...
+------------------------------------------------------------
+
+Query: "How do I train a machine learning model?"
+Search time: 2.15ms
+Top matches:
+  1. [dist=0.8234] Machine learning models require training data to learn patterns.
+  2. [dist=1.0156] Neural networks use backpropagation to update weights during training.
+  3. [dist=1.4521] Data drift occurs when production data differs from training data.
+
+Query: "What is containerization?"
+Search time: 1.87ms
+Top matches:
+  1. [dist=0.7891] Docker containers package applications with their dependencies.
+  2. [dist=1.1234] Kubernetes orchestrates container deployment at scale.
+  3. [dist=1.8765] Python virtual environments isolate project dependencies.
+
+Query: "How to track ML experiments?"
+Search time: 1.92ms
+Top matches:
+  1. [dist=0.6543] MLflow tracks experiments, models, and artifacts.
+  2. [dist=1.3421] Machine learning models require training data to learn patterns.
+  3. [dist=1.5678] Data drift occurs when production data differs from training data.
+
+============================================================
+MWE Complete - Vector retrieval demonstrated successfully!
+============================================================

@@ -1,0 +1,41 @@
+============================================================
+GITHUB ACTIONS DOCKER - CI/CD Pipeline Demonstration
+============================================================
+
+📄 Loading: sample_workflow.yml
+   Workflow name: Build and Push Docker Image
+
+🎯 Trigger Analysis:
+   Triggers: push, pull_request
+  - push.tags: ['v*'] (release builds)
+  - pull_request: runs on PR events
+
+✅ Validation Results:
+   All checks passed!
+
+🔄 Simulated Pipeline Execution:
+--------------------------------------------------
+
+📦 Job: test
+   Runner: ubuntu-latest
+   Step 1: Checkout code
+   Step 2: Set up Python
+   Step 3: Install dependencies
+   Step 4: Run unit tests
+
+📦 Job: build-and-push
+   Runner: ubuntu-latest
+   Depends on: ['test']
+   Step 1: Checkout code
+   Step 2: Authenticate to Google Cloud
+   Step 3: Configure Docker for Artifact Registry
+   Step 4: Extract version from tag
+   Step 5: Build Docker image
+   Step 6: Push to Artifact Registry
+
+============================================================
+💡 Key Takeaways:
+   1. 'needs' creates job dependencies (test must pass first)
+   2. Secrets are referenced via ${{ secrets.NAME }}
+   3. Tags like 'v*' trigger release builds only
+============================================================

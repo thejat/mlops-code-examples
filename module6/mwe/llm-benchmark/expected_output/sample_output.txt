@@ -1,0 +1,37 @@
+🔧 Benchmark Configuration:
+   Endpoint:      http://localhost:8000/generate
+   Requests:      50
+   Concurrency:   5
+   Max Tokens:    100
+   Repeat Ratio:  0.3
+
+🔥 Running 5 warmup requests...
+
+🏃 Running 50 benchmark requests...
+
+============================================================
+BENCHMARK RESULTS
+============================================================
+
+📊 Request Summary:
+   Total Requests:      50
+   Successful:          50
+   Failed:              0
+
+⏱️  Latency Metrics:
+   TTFT P50:            45.23 ms
+   TTFT P95:            128.67 ms
+   TTFT P99:            156.42 ms
+   TPOT (avg):          12.34 ms
+   Avg Latency:         523.45 ms
+
+🚀 Throughput:
+   Tokens/sec:          856.32
+   Total Time:          5.84 sec
+
+💾 Cache Performance:
+   Hit Rate:            28.0%
+
+============================================================
+
+📁 Results saved to: results.json

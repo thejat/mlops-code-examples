@@ -1,0 +1,15 @@
+=== Drift Detection Demo ===
+
+Generating synthetic data...
+Comparing reference vs current distributions...
+
+Feature         PSI Severity Drift?
+----------------------------------------
+age          0.1547 low      no
+income       0.0065 none     no
+score        0.0017 none     no
+
+=== Summary ===
+Features analyzed: 3
+Features with drift: 0
+Action: Continue monitoring

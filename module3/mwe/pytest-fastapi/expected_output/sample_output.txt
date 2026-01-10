@@ -1,0 +1,20 @@
+========================= test session starts =========================
+platform linux -- Python 3.11.x, pytest-8.0.0
+collected 14 items
+
+test_app.py::test_health_endpoint PASSED                         [  7%]
+test_app.py::test_predict_valid_input PASSED                     [ 14%]
+test_app.py::test_predict_returns_valid_class PASSED             [ 21%]
+test_app.py::test_predict_returns_confidence PASSED              [ 28%]
+test_app.py::test_predict_invalid_type PASSED                    [ 35%]
+test_app.py::test_predict_missing_field PASSED                   [ 42%]
+test_app.py::test_predict_empty_body PASSED                      [ 50%]
+test_app.py::test_predict_negative_value PASSED                  [ 57%]
+test_app.py::test_predict_parametrized[setosa] PASSED            [ 64%]
+test_app.py::test_predict_parametrized[versicolor] PASSED        [ 71%]
+test_app.py::test_predict_parametrized[virginica] PASSED         [ 78%]
+test_app.py::test_specific_predictions[setosa_sample-setosa] PASSED [ 85%]
+test_app.py::test_specific_predictions[versicolor_sample-versicolor] PASSED [ 92%]
+test_app.py::test_specific_predictions[virginica_sample-virginica] PASSED [100%]
+
+========================== 14 passed in 0.52s ==========================

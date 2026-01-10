@@ -1,0 +1,35 @@
+=== A/B Test Simulation Demo ===
+
+Step 1: Sample Size Calculation
+  Required per variant: 31,234
+  Simulating: 20,000 total users
+
+Step 2: Simulating Experiment
+  Control users: 9,962
+  Treatment users: 10,038
+
+Step 3: Statistical Analysis
+
+============================================================
+A/B TEST SIMULATION RESULTS
+============================================================
+
+Experiment: model_v2_conversion_test
+
+--- Sample Sizes ---
+  Control: 9,962
+  Treatment: 10,038
+
+--- Conversion Rates ---
+  Control: 0.0996 (9.96%)
+  Treatment: 0.1053 (10.53%)
+  Relative Lift: +5.72%
+
+--- Statistical Analysis ---
+  P-value: 0.019853
+  95% CI: [+0.0009, +0.0105]
+  Significant (α=0.05): Yes
+
+--- Recommendation ---
+  SHIP_TREATMENT
+  → Deploy treatment to all users

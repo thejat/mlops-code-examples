@@ -1,0 +1,38 @@
+# Expected Output from: airflow dags test train_pipeline 2024-01-01
+# Note: Actual output will include additional Airflow logging lines
+
+[2024-01-01 00:00:00] INFO - Running task: preprocess_data
+==================================================
+PREPROCESS_DATA: Starting data preprocessing...
+  - Loaded 1000 samples
+  - Cleaned missing values
+  - Saved to /tmp/processed_data.csv
+PREPROCESS_DATA: Complete!
+==================================================
+[2024-01-01 00:00:00] INFO - Task preprocess_data completed successfully
+[2024-01-01 00:00:00] INFO - Pushing XCom: {'data_path': '/tmp/processed_data.csv', 'n_samples': 1000}
+
+[2024-01-01 00:00:01] INFO - Running task: train_model
+==================================================
+TRAIN_MODEL: Starting model training...
+  - Received from preprocess: {'data_path': '/tmp/processed_data.csv', 'n_samples': 1000}
+  - Training on 1000 samples
+  - Model accuracy: 0.92
+  - Saved model to /tmp/model.pkl
+TRAIN_MODEL: Complete!
+==================================================
+[2024-01-01 00:00:01] INFO - Task train_model completed successfully
+[2024-01-01 00:00:01] INFO - Pushing XCom: {'model_path': '/tmp/model.pkl', 'accuracy': 0.92}
+
+[2024-01-01 00:00:02] INFO - Running task: register_model
+==================================================
+REGISTER_MODEL: Starting model registration...
+  - Received from train: {'model_path': '/tmp/model.pkl', 'accuracy': 0.92}
+  - Model accuracy threshold check: 0.92 >= 0.8 ✓
+  - Registered as version: v1.0
+REGISTER_MODEL: Complete!
+==================================================
+[2024-01-01 00:00:02] INFO - Task register_model completed successfully
+[2024-01-01 00:00:02] INFO - Pushing XCom: {'version': 'v1.0', 'registered': True}
+
+[2024-01-01 00:00:02] INFO - DAG train_pipeline completed successfully

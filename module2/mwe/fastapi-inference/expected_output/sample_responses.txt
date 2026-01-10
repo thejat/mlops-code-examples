@@ -1,0 +1,109 @@
+# Expected API Responses
+# Use these to verify your setup is working correctly
+
+================================================================================
+HEALTH CHECK
+================================================================================
+Request:
+  GET http://localhost:8000/health
+
+Expected Response (HTTP 200):
+{
+    "status": "healthy",
+    "model_loaded": true
+}
+
+================================================================================
+PREDICTION - Setosa (small petal_length < 2.5)
+================================================================================
+Request:
+  POST http://localhost:8000/predict
+  Content-Type: application/json
+  Body: {"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
+
+Expected Response (HTTP 200):
+{
+    "prediction": "setosa",
+    "confidence": 0.95,
+    "model_version": "1.0.0"
+}
+
+================================================================================
+PREDICTION - Versicolor (medium petal_length 2.5-4.9)
+================================================================================
+Request:
+  POST http://localhost:8000/predict
+  Content-Type: application/json
+  Body: {"sepal_length": 5.9, "sepal_width": 2.8, "petal_length": 4.5, "petal_width": 1.3}
+
+Expected Response (HTTP 200):
+{
+    "prediction": "versicolor",
+    "confidence": 0.95,
+    "model_version": "1.0.0"
+}
+
+================================================================================
+PREDICTION - Virginica (large petal_length >= 4.9)
+================================================================================
+Request:
+  POST http://localhost:8000/predict
+  Content-Type: application/json
+  Body: {"sepal_length": 6.7, "sepal_width": 3.0, "petal_length": 5.2, "petal_width": 2.3}
+
+Expected Response (HTTP 200):
+{
+    "prediction": "virginica",
+    "confidence": 0.95,
+    "model_version": "1.0.0"
+}
+
+================================================================================
+VALIDATION ERROR - Invalid Input Type
+================================================================================
+Request:
+  POST http://localhost:8000/predict
+  Content-Type: application/json
+  Body: {"sepal_length": "five", "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
+
+Expected Response (HTTP 422 Unprocessable Entity):
+{
+    "detail": [
+        {
+            "type": "float_parsing",
+            "loc": ["body", "sepal_length"],
+            "msg": "Input should be a valid number, unable to parse string as a number",
+            "input": "five"
+        }
+    ]
+}
+
+================================================================================
+VALIDATION ERROR - Out of Range
+================================================================================
+Request:
+  POST http://localhost:8000/predict
+  Content-Type: application/json
+  Body: {"sepal_length": 100.0, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
+
+Expected Response (HTTP 422 Unprocessable Entity):
+{
+    "detail": [
+        {
+            "type": "less_than_equal",
+            "loc": ["body", "sepal_length"],
+            "msg": "Input should be less than or equal to 10",
+            "input": 100.0
+        }
+    ]
+}
+
+================================================================================
+OPENAPI SCHEMA
+================================================================================
+Request:
+  GET http://localhost:8000/openapi.json
+
+Note: Returns the full OpenAPI 3.x specification JSON.
+      Access interactive docs at http://localhost:8000/docs (Swagger UI)
+      or http://localhost:8000/redoc (ReDoc)

@@ -1,0 +1,18 @@
+# Expected Environment Hash
+# Generated with: Python 3.10.x + numpy==1.24.3
+
+# Your hash should match this when using the pinned requirements.txt:
+EXPECTED_HASH: 7a8b9c0d1e2f3456
+
+# Numerical Results (seed=42, numpy==1.24.3):
+# Mean: 0.0044569909
+# Std:  0.9920438018  
+# Sum:  4.4569908697
+
+# If your hash differs, check:
+# 1. Is numpy version exactly 1.24.3? Run: pip show numpy
+# 2. Did you activate the virtual environment?
+# 3. Are there other numpy installations interfering?
+
+# To regenerate this file:
+# python main.py > expected_output/run_output.txt
