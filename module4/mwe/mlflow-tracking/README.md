@@ -96,5 +96,5 @@ with mlflow.start_run():
 
 ## Related Materials
 
-- [MLflow Tracking Fundamentals](../../../instructional-materials/mlflow-tracking.md)
-- [Experiment Comparison](../../../instructional-materials/experiment-comparison.md)
+- MLflow Tracking Fundamentals
+- Experiment Comparison

@@ -121,6 +121,6 @@ for job_name, job in workflow.get('jobs', {}).items():
 
 ## Related Materials
 
-- [GitHub Actions for Docker CI/CD](../../../instructional-materials/github-actions-docker.md)
-- [Container Registries & Image Tagging](../../../instructional-materials/container-registries.md)
-- [Semantic Versioning for Containers](../../../instructional-materials/semantic-versioning.md)
+- GitHub Actions for Docker CI/CD
+- Container Registries & Image Tagging
+- Semantic Versioning for Containers

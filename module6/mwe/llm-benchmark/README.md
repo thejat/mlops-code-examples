@@ -133,6 +133,6 @@ Check your endpoint URL and API format match the expected schema.
 
 ## Related Files
 
-- [`llm-benchmarking.md`](../../instructional-materials/llm-benchmarking.md) - Concepts
-- [`dynamic-request-batching.md`](../../instructional-materials/dynamic-request-batching.md) - Batching implementation
-- [`inference-caching.md`](../../instructional-materials/inference-caching.md) - Caching implementation
+- LLM Benchmarking - Concepts
+- Dynamic Request Batching - Batching implementation
+- Inference Caching - Caching implementation

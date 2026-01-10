@@ -85,6 +85,6 @@ This example covers Milestone 6 Part 2 requirements:
 
 ## Related Materials
 
-- [retrieval-agent-integration.md](../../../instructional-materials/retrieval-agent-integration.md)
-- [multi-tool-coordination.md](../../../instructional-materials/multi-tool-coordination.md)
-- [agent-evaluation-tracing.md](../../../instructional-materials/agent-evaluation-tracing.md)
+- Retrieval Agent Integration
+- Multi-Tool Coordination
+- Agent Evaluation Tracing

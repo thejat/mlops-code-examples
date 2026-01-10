@@ -156,5 +156,5 @@ env:
 
 ## Related Materials
 
-- [CI/CD for ML Validation](../../../instructional-materials/cicd-ml-validation.md)
-- [GitHub Actions for ML Pipelines](../../../instructional-materials/github-actions-cicd-bridge.md)
+- CI/CD for ML Validation
+- GitHub Actions for ML Pipelines

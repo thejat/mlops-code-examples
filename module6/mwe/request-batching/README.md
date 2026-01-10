@@ -61,5 +61,5 @@ Average batch size: 3.3
 
 ## Related Materials
 
-- [Dynamic Request Batching](../../instructional-materials/dynamic-request-batching.md)
-- [Asyncio Concurrency Patterns](../../instructional-materials/asyncio-concurrency-patterns.md)
+- Dynamic Request Batching
+- Asyncio Concurrency Patterns

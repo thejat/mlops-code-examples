@@ -100,6 +100,6 @@ curl -X POST http://localhost:8000/batch \
 
 ## Related Materials
 
-- [FastAPI Fundamentals](../../instructional-materials/fastapi-fundamentals.md)
-- [Pydantic Request/Response Models](../../instructional-materials/pydantic-schemas.md)
-- [REST API Design Principles](../../instructional-materials/rest-api-design.md)
+- FastAPI Fundamentals
+- Pydantic Request/Response Models
+- REST API Design Principles

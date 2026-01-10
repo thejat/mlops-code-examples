@@ -183,6 +183,6 @@ pytest --cov=. --cov-report=html
 
 ## Related Materials
 
-- [Testing ML Services for CI/CD](../../../instructional-materials/testing-ml-services.md)
-- [FastAPI Fundamentals](../../../../module2/instructional-materials/fastapi-fundamentals.md)
-- [Pydantic Request/Response Models](../../../../module2/instructional-materials/pydantic-schemas.md)
+- Testing ML Services for CI/CD
+- FastAPI Fundamentals
+- Pydantic Request/Response Models

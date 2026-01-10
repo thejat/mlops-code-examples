@@ -66,6 +66,6 @@ Top matches:
 
 ## Related Reading
 
-- [`embedding-models.md`](../../instructional-materials/embedding-models.md)
-- [`vector-databases.md`](../../instructional-materials/vector-databases.md)
+- Embedding Models
+- Vector Databases
 - [FAISS Documentation](https://github.com/facebookresearch/faiss/wiki)
