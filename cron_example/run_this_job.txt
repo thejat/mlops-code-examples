@@ -1,8 +1,0 @@
-To run the script:
-
-Step 1: open cron editor on the command line with `crontab -e`
-
-Step 2: insert the following line (replace localmachine with your username)
-
-* * * * * /home/theja/mlops-code-examples/cron_example/run_this_job.sh
-

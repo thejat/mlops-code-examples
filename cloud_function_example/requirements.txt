@@ -1,5 +1,0 @@
-# Function dependencies, for example:
-# package>=version
-flask
-numpy
-google-cloud-storage
