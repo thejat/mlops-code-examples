@@ -1,0 +1,72 @@
+============================================================
+DOCKER MULTISTAGE BUILD - Analysis & Demonstration
+============================================================
+
+📄 Analyzing: Dockerfile
+   Found 2 build stage(s)
+
+🔄 Build Stage Flow:
+============================================================
+
+  ┌──────────────────────────────────────────────────────┐
+  │ Stage 1: builder                                      │
+  │ Base: python:3.11-slim                                │
+  │ Instructions: WORKDIR, RUN, COPY                      │
+  └──────────────────────────────────────────────────────┘
+           │
+           │  COPY --from=builder
+           ▼
+  ┌──────────────────────────────────────────────────────┐
+  │ Stage 2: runtime                                      │
+  │ Base: python:3.11-slim                                │
+  │ Instructions: WORKDIR, RUN, COPY, ENV, USER, EXPOSE, HEALTHCHECK, CMD │
+  └──────────────────────────────────────────────────────┘
+
+🔍 Best Practices Validation:
+------------------------------------------------------------
+   ✅ Multistage Build: Uses named stages for smaller final image
+   ✅ Slim Base Image: Uses slim/alpine variant for smaller size
+   ✅ Non-root User: Runs as non-root user (security best practice)
+   ✅ Layer Caching: Requirements copied before app code
+   ✅ Health Check: Includes HEALTHCHECK for orchestration
+   ✅ Pip Cache: Uses --no-cache-dir to reduce image size
+   ✅ Stage Copying: Uses COPY --from to transfer artifacts
+
+   Score: 7/7 checks passed
+
+📊 Estimated Size Comparison:
+------------------------------------------------------------
+   python:3.11 (single-stage)     : ~1000 MB
+   python:3.11-slim (single-stage): ~500 MB
+   python:3.11-slim (multistage)  : ~200 MB
+
+   💾 Savings: ~800 MB (80% reduction)
+
+   Excluded from final image:
+   • build-essential (~150 MB)
+   • gcc, g++ (~100 MB)
+   • pip cache (~50 MB)
+   • development headers (~50 MB)
+
+🛠️  Build Commands:
+------------------------------------------------------------
+   # Build the full image
+   docker build -t ml-service:v1 .
+
+   # Build only the builder stage (for debugging)
+   docker build --target builder -t ml-service:builder .
+
+   # Run the container
+   docker run -p 8000:8000 ml-service:v1
+
+   # Test the health endpoint
+   curl http://localhost:8000/health
+
+============================================================
+📚 Key Takeaways:
+============================================================
+   1. Multistage builds separate build-time from runtime dependencies
+   2. COPY --from=builder transfers only needed artifacts
+   3. Non-root USER improves container security
+   4. Copy requirements.txt first for better layer caching
+   5. HEALTHCHECK enables container orchestration integration

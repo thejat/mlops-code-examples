@@ -1,0 +1,14 @@
+# Docker Multistage Build MWE Dependencies
+# These are the dependencies that would be installed in the Docker container
+
+# Web framework for the ML inference service
+fastapi==0.115.0
+
+# ASGI server for running FastAPI
+uvicorn==0.30.6
+
+# Data validation (included with FastAPI, but explicit for clarity)
+pydantic==2.9.0
+
+# Note: main.py uses only standard library (pathlib, re, dataclasses)
+# No additional dependencies needed for the analyzer script
