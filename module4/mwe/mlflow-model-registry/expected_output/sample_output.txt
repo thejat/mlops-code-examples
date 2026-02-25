@@ -1,0 +1,119 @@
+============================================================
+MLflow Model Registry - Train and Register
+============================================================
+
+🔧 Using tracking URI: sqlite:///mlflow.db
+
+📊 Loading Iris dataset...
+   Training samples: 120
+   Test samples: 30
+
+🔵 Started MLflow run: a1b2c3d4...
+
+📝 Logging parameters...
+   n_estimators: 100
+   max_depth: 5
+   random_state: 42
+
+🏋️ Training RandomForest classifier...
+   Training completed in 0.15 seconds
+
+📈 Evaluating model...
+   Accuracy: 1.0000
+   F1 Score: 1.0000
+
+📝 Registering model in Model Registry...
+
+✅ Model registered successfully!
+   Model name: iris-classifier
+   Model version: 1
+   Run ID: a1b2c3d4e5f6789...
+   Model URI: models:/iris-classifier/1
+
+============================================================
+✅ Training and registration complete!
+============================================================
+
+👀 To view in MLflow UI, run:
+   mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+   Then open http://localhost:5000
+
+💡 Run this script again to create version 2!
+
+============================================================
+MLflow Model Registry - Stage Management
+============================================================
+
+🔧 Using tracking URI: sqlite:///mlflow.db
+
+📋 Registered Model: iris-classifier
+   Description: (none)
+   Creation time: 1698765432000
+
+📦 Model Versions:
+   Version 1: stage=None, run_id=a1b2c3d4...
+   Version 2: stage=None, run_id=e5f6g7h8...
+
+📝 Updating model description...
+   ✓ Description updated
+
+🔄 Transitioning version 2...
+   None → Staging... ✓
+   Staging → Production... ✓
+
+✅ Version 2 is now in Production!
+
+📦 Final Model Versions:
+   Version 1: stage=Archived
+   Version 2: stage=Production
+
+============================================================
+✅ Model management complete!
+============================================================
+
+👀 View in MLflow UI:
+   mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+
+============================================================
+MLflow Model Registry - Load Models
+============================================================
+
+🔧 Using tracking URI: sqlite:///mlflow.db
+
+📊 Loading sample data...
+   Sample shape: (5, 4)
+   Actual labels: [0, 0, 0, 0, 0]
+
+🔍 Loading models from registry...
+
+   Method 1: Load by version
+   Loading models:/iris-classifier/1...
+   ✓ Loaded version 1
+
+   Method 2: Load by stage
+   Loading models:/iris-classifier/Production...
+   ✓ Loaded Production model
+
+   Method 3: Load latest version
+   Querying latest version via MlflowClient...
+   Latest version is: 2
+   Loading models:/iris-classifier/2...
+   ✓ Loaded version 2
+
+============================================================
+🎯 Predictions (5 samples):
+============================================================
+
+   Actual labels:  [0, 0, 0, 0, 0]
+   Version 1:      [0, 0, 0, 0, 0]
+   Production:     [0, 0, 0, 0, 0]
+   Latest (v2):    [0, 0, 0, 0, 0]
+
+📋 Class names:
+   0: setosa
+   1: versicolor
+   2: virginica
+
+============================================================
+✅ All models loaded and predictions complete!
+============================================================
