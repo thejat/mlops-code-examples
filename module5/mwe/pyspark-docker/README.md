@@ -1,13 +1,13 @@
 # PySpark Docker Compose - Minimum Working Example
 
-**Pattern:** Run a distributed PySpark cluster using Docker Compose with the Bitnami Spark image.
+**Pattern:** Run a distributed PySpark cluster using Docker Compose with the official Apache Spark image.
 
 ---
 
 ## Prerequisites
 
 - Docker Desktop (or Docker Engine + Docker Compose)
-- ~2GB disk space for Spark images
+- ~2GB disk space for Spark images (apache/spark-py image)
 - Linux, macOS, or Windows with WSL2
 
 ---
@@ -34,7 +34,7 @@ This starts:
 ### 3. Submit the Word Count Job
 
 ```bash
-docker exec -it spark-master spark-submit /opt/work/word_count.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
 ```
 
 ---
@@ -95,7 +95,7 @@ Spark session stopped.
 |---------|---------------|
 | Spark Cluster Setup | `docker-compose.yml` - master/worker services |
 | Service Networking | `sparknet` network connects all containers |
-| Volume Mounting | `./work:/opt/work` shares code with cluster |
+| Volume Mounting | `./work:/opt/spark/work` shares code with cluster |
 | SparkSession Creation | `word_count.py` - connects to master URL |
 | DataFrame API | `explode()`, `split()`, `groupBy()`, `agg()` |
 | Distributed Collection | `word_counts.collect()` gathers results |
@@ -125,14 +125,14 @@ Spark session stopped.
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               │
-                              │ Volume mount: ./work:/opt/work
+                              │ Volume mount: ./work:/opt/spark/work
                               │
 ┌─────────────────────────────┴───────────────────────────────────┐
 │                        Host Machine                              │
 │                                                                  │
-│   ./work/word_count.py  ─────►  /opt/work/word_count.py         │
+│   ./work/word_count.py  ─────►  /opt/spark/work/word_count.py   │
 │                                                                  │
-│   $ docker exec -it spark-master spark-submit /opt/work/word_count.py
+│   $ docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -149,8 +149,9 @@ This MWE uses the **same sample text and output format** as the Ray MWE (`module
 | **Setup** | `pip install ray` | `docker compose up` |
 | **Parallelism Model** | `@ray.remote` tasks | DataFrame partitions |
 | **Driver Location** | Same process | Inside master container |
-| **Web UI** | Ray Dashboard | Spark Master UI |
+| **Web UI** | Ray Dashboard | Spark Master UI (port 8080) |
 | **Code Style** | Python decorators | DataFrame method chaining |
+| **Image** | N/A (local Python) | apache/spark-py:latest |
 
 ### Code Comparison
 
@@ -220,7 +221,7 @@ open http://localhost:8080    # macOS
 xdg-open http://localhost:8080  # Linux
 
 # Submit the word count job
-docker exec -it spark-master spark-submit /opt/work/word_count.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
 
 # Follow cluster logs
 docker compose logs -f spark-master
@@ -261,12 +262,12 @@ Edit `docker-compose.yml` to add `spark-worker-3`:
 
 ```yaml
 spark-worker-3:
-  image: bitnami/spark:3.5.0
+  image: apache/spark-py:latest
   container_name: spark-worker-3
   depends_on: [spark-master]
   environment:
     - SPARK_MODE=worker
-    - SPARK_MASTER_URL=spark://spark-master:7077
+    - SPARK_MASTER=spark://spark-master:7077
     - SPARK_WORKER_CORES=1
     - SPARK_WORKER_MEMORY=1G
     - SPARK_WORKER_WEBUI_PORT=8083
@@ -274,7 +275,8 @@ spark-worker-3:
     - "8083:8083"
   networks: [sparknet]
   volumes:
-    - ./work:/opt/work
+    - ./work:/opt/spark/work
+  command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
 ```
 
 ### 2. Increase Resources
@@ -310,7 +312,7 @@ spark.stop()
 Submit it:
 
 ```bash
-docker exec -it spark-master spark-submit /opt/work/my_analysis.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/my_analysis.py
 ```
 
 ---
@@ -330,7 +332,7 @@ docker exec -it spark-master spark-submit /opt/work/my_analysis.py
 
 ## Resources
 
-- [Bitnami Spark Docker Image](https://github.com/bitnami/containers/tree/main/bitnami/spark)
+- [Apache Spark Docker Image](https://hub.docker.com/r/apache/spark-py)
 - [Apache Spark DataFrame Guide](https://spark.apache.org/docs/latest/sql-programming-guide.html)
 - [PySpark API Reference](https://spark.apache.org/docs/latest/api/python/index.html)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)

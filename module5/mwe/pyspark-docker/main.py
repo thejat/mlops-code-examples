@@ -84,7 +84,7 @@ def extract_spark_services(config: dict) -> list[SparkService]:
             services.append(SparkService(
                 name=name,
                 mode=mode,
-                image=image_match.group(1) if image_match else "bitnami/spark:3.5.0",
+                image=image_match.group(1) if image_match else "apache/spark-py:latest",
                 cores=int(cores_match.group(1)) if cores_match else (0 if mode == "master" else 1),
                 memory=memory_match.group(1) if memory_match else ("N/A" if mode == "master" else "1G"),
                 ui_port=int(port_match.group(1)) if port_match else 8080,
@@ -159,12 +159,12 @@ def print_cluster_diagram(services: list[SparkService]) -> None:
         print("  │                                                         │")
         print("  └─────────────────────────────────────────────────────────┘")
         print("                              │")
-        print("                              │ Volume mount: ./work:/opt/work")
+        print("                              │ Volume mount: ./work:/opt/spark/work")
         print("                              │")
         print("  ┌─────────────────────────────────────────────────────────┐")
         print("  │                      Host Machine                        │")
         print("  │                                                          │")
-        print("  │   ./work/word_count.py  ────►  /opt/work/word_count.py  │")
+        print("  │   ./work/word_count.py  ────►  /opt/spark/work/word_count.py")
         print("  │                                                          │")
         print("  └──────────────────────────────────────────────────────────┘")
     
@@ -305,7 +305,7 @@ def main():
     print("   open http://localhost:8080")
     print()
     print("   # Submit the word count job")
-    print("   docker exec -it spark-master spark-submit /opt/work/word_count.py")
+    print("   docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py")
     print()
     print("   # View cluster logs")
     print("   docker compose logs -f spark-master")
@@ -317,9 +317,9 @@ def main():
     print("\n" + "=" * 60)
     print("📚 Key Takeaways:")
     print("=" * 60)
-    print("   1. Bitnami Spark image provides master/worker modes via env vars")
-    print("   2. Workers connect to master using SPARK_MASTER_URL")
-    print("   3. Shared volume ./work:/opt/work enables code sharing")
+    print("   1. Apache Spark image uses explicit master/worker commands")
+    print("   2. Workers connect to master using spark://spark-master:7077")
+    print("   3. Shared volume ./work:/opt/spark/work enables code sharing")
     print("   4. spark-submit runs jobs inside the cluster")
     print("   5. Same word count example as Ray MWE for comparison")
     print()
