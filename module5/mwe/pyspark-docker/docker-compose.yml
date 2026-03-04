@@ -5,7 +5,6 @@ services:
     image: apache/spark-py:latest
     container_name: spark-master
     environment:
-      - SPARK_MODE=master
       - SPARK_MASTER_HOST=spark-master
       - SPARK_MASTER_PORT=7077
       - SPARK_MASTER_WEBUI_PORT=8080
@@ -22,34 +21,26 @@ services:
     container_name: spark-worker-1
     depends_on: [spark-master]
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_WORKER_CORES=1
-      - SPARK_WORKER_MEMORY=1G
       - SPARK_WORKER_WEBUI_PORT=8081
     ports:
       - "8081:8081"
     networks: [sparknet]
     volumes:
       - ./work:/opt/spark/apps
-    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker -c 1 -m 1G spark://spark-master:7077
 
   spark-worker-2:
     image: apache/spark-py:latest
     container_name: spark-worker-2
     depends_on: [spark-master]
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_WORKER_CORES=1
-      - SPARK_WORKER_MEMORY=1G
       - SPARK_WORKER_WEBUI_PORT=8082
     ports:
       - "8082:8082"
     networks: [sparknet]
     volumes:
       - ./work:/opt/spark/apps
-    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker -c 1 -m 1G spark://spark-master:7077
 
 networks:
   sparknet:
