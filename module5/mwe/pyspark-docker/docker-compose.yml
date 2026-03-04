@@ -14,7 +14,7 @@ services:
       - "7077:7077"   # Spark master endpoint
     networks: [sparknet]
     volumes:
-      - ./work:/opt/spark/work
+      - ./work:/opt/spark/apps
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
 
   spark-worker-1:
@@ -31,7 +31,7 @@ services:
       - "8081:8081"
     networks: [sparknet]
     volumes:
-      - ./work:/opt/spark/work
+      - ./work:/opt/spark/apps
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
 
   spark-worker-2:
@@ -48,7 +48,7 @@ services:
       - "8082:8082"
     networks: [sparknet]
     volumes:
-      - ./work:/opt/spark/work
+      - ./work:/opt/spark/apps
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
 
 networks:

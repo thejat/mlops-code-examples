@@ -34,7 +34,7 @@ This starts:
 ### 3. Submit the Word Count Job
 
 ```bash
-docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/apps/word_count.py
 ```
 
 ---
@@ -95,7 +95,7 @@ Spark session stopped.
 |---------|---------------|
 | Spark Cluster Setup | `docker-compose.yml` - master/worker services |
 | Service Networking | `sparknet` network connects all containers |
-| Volume Mounting | `./work:/opt/spark/work` shares code with cluster |
+| Volume Mounting | `./work:/opt/spark/apps` shares code with cluster |
 | SparkSession Creation | `word_count.py` - connects to master URL |
 | DataFrame API | `explode()`, `split()`, `groupBy()`, `agg()` |
 | Distributed Collection | `word_counts.collect()` gathers results |
@@ -125,14 +125,14 @@ Spark session stopped.
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
                               │
-                              │ Volume mount: ./work:/opt/spark/work
+                              │ Volume mount: ./work:/opt/spark/apps
                               │
 ┌─────────────────────────────┴───────────────────────────────────┐
 │                        Host Machine                              │
 │                                                                  │
-│   ./work/word_count.py  ─────►  /opt/spark/work/word_count.py   │
+│   ./work/word_count.py  ─────►  /opt/spark/apps/word_count.py   │
 │                                                                  │
-│   $ docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
+│   $ docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/apps/word_count.py
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -221,7 +221,7 @@ open http://localhost:8080    # macOS
 xdg-open http://localhost:8080  # Linux
 
 # Submit the word count job
-docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/word_count.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/apps/word_count.py
 
 # Follow cluster logs
 docker compose logs -f spark-master
@@ -275,7 +275,7 @@ spark-worker-3:
     - "8083:8083"
   networks: [sparknet]
   volumes:
-    - ./work:/opt/spark/work
+    - ./work:/opt/spark/apps
   command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
 ```
 
@@ -312,7 +312,7 @@ spark.stop()
 Submit it:
 
 ```bash
-docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/work/my_analysis.py
+docker exec -it spark-master /opt/spark/bin/spark-submit /opt/spark/apps/my_analysis.py
 ```
 
 ---
