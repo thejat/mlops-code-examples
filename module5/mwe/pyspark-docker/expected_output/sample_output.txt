@@ -1,0 +1,138 @@
+# Sample output from running the PySpark word count job
+# Command: docker exec -it spark-master spark-submit /opt/work/word_count.py
+
+============================================================
+PYSPARK WORD COUNT: Distributed Word Count Example
+============================================================
+
+[1/4] Connecting to Spark cluster...
+  Connected to: spark://spark-master:7077
+  App ID: app-20260304184523-0001
+
+[2/4] Processing 5 text batches...
+
+[3/4] Counting words across workers...
+
+[4/4] Collecting results...
+
+============================================================
+RESULTS: Top 10 Most Frequent Words
+============================================================
+  the               6 ██████
+  fox               2 ██
+  dog               2 ██
+  and               2 ██
+  distributed       2 ██
+  for               2 ██
+  quick             1 █
+  brown             1 █
+  jumps             1 █
+  over              1 █
+
+Total unique words: 30
+Total word occurrences: 40
+
+Spark session stopped.
+============================================================
+
+
+# Sample output from main.py (local analyzer)
+# Command: python main.py
+
+============================================================
+PYSPARK DOCKER COMPOSE - Analysis & Demonstration
+============================================================
+
+📄 Analyzing: docker-compose.yml
+   Found 3 service(s)
+
+🔄 Spark Cluster Topology:
+============================================================
+
+  ┌─────────────────────────────────────────────────────────┐
+  │                  Docker Compose Network                 │
+  │                                                         │
+  │   ┌───────────────────────────────────────────────┐    │
+  │   │              spark-master                      │    │
+  │   │              Port 7077 (Spark protocol)        │    │
+  │   │              Port 8080 (Web UI)                │    │
+  │   └───────────────────────────────────────────────┘    │
+  │                    ▲                    ▲               │
+  │                    │                    │               │
+  │        ┌──────────┘                    └──────────┐    │
+  │        │                                          │    │
+  │   ┌────┴────────────────┐    ┌────────────────────┴─┐  │
+  │   │   spark-worker-1    │    │   spark-worker-2     │  │
+  │   │   1 core / 1G       │    │   1 core / 1G        │  │
+  │   │   Port 8081 (UI)    │    │   Port 8082 (UI)     │  │
+  │   └─────────────────────┘    └──────────────────────┘  │
+  │                                                         │
+  └─────────────────────────────────────────────────────────┘
+                              │
+                              │ Volume mount: ./work:/opt/work
+                              │
+  ┌─────────────────────────────────────────────────────────┐
+  │                      Host Machine                        │
+  │                                                          │
+  │   ./work/word_count.py  ────►  /opt/work/word_count.py  │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+🔍 Configuration Validation:
+------------------------------------------------------------
+   ✅ Spark Master: Master node configured
+   ✅ Spark Workers: 2 worker(s) configured
+   ✅ Worker Dependencies: Workers depend on master
+   ✅ CPU Resources: Total worker cores: 2
+   ✅ Memory Resources: Memory allocated to workers
+   ✅ UI Ports: Each service has unique UI port
+
+   Score: 6/6 checks passed
+
+📁 Work Directory Contents:
+------------------------------------------------------------
+   • word_count.py
+
+📊 PySpark vs Ray Comparison:
+------------------------------------------------------------
+
+   ┌─────────────────────┬─────────────────────┬──────────────────────┐
+   │ Aspect              │ Ray MWE             │ PySpark MWE          │
+   ├─────────────────────┼─────────────────────┼──────────────────────┤
+   │ Infrastructure      │ Local process       │ Docker Compose       │
+   │ Setup               │ pip install ray     │ docker compose up    │
+   │ Parallelism model   │ @ray.remote tasks   │ DataFrame/RDD        │
+   │ Driver location     │ Same process        │ Inside container     │
+   │ Web UI              │ Ray Dashboard       │ Spark Master UI      │
+   │ Same sample data    │ ✓ 5 text batches    │ ✓ 5 text batches     │
+   │ Same output format  │ ✓ Top 10 words      │ ✓ Top 10 words       │
+   └─────────────────────┴─────────────────────┴──────────────────────┘
+
+🛠️  Cluster Commands:
+------------------------------------------------------------
+   # Start the Spark cluster
+   docker compose up -d
+
+   # Check cluster status
+   docker compose ps
+
+   # View Spark Master UI
+   open http://localhost:8080
+
+   # Submit the word count job
+   docker exec -it spark-master spark-submit /opt/work/word_count.py
+
+   # View cluster logs
+   docker compose logs -f spark-master
+
+   # Stop the cluster
+   docker compose down
+
+============================================================
+📚 Key Takeaways:
+============================================================
+   1. Bitnami Spark image provides master/worker modes via env vars
+   2. Workers connect to master using SPARK_MASTER_URL
+   3. Shared volume ./work:/opt/work enables code sharing
+   4. spark-submit runs jobs inside the cluster
+   5. Same word count example as Ray MWE for comparison

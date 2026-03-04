@@ -1,0 +1,4 @@
+# Dependencies for main.py (local analyzer script)
+# The PySpark job runs inside Docker containers, so no PySpark install needed locally
+
+pyyaml>=6.0    # For parsing docker-compose.yml
