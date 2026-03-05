@@ -11,6 +11,7 @@ services:
     ports:
       - "8080:8080"   # Spark Master UI
       - "7077:7077"   # Spark master endpoint
+      - "4040:4040"   # Spark Application UI (during job execution)
     networks: [sparknet]
     volumes:
       - ./work:/opt/spark/apps
