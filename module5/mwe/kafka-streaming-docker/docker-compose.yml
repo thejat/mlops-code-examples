@@ -1,0 +1,63 @@
+###############################################################################
+# Kafka Streaming MWE - Docker Compose
+#
+# Runs a single Kafka broker in KRaft mode (no Zookeeper) with an init
+# container that creates the 'transactions' topic with 3 partitions.
+#
+# Usage:
+#   docker compose up -d
+#   docker compose ps          # verify all services healthy
+#   python producer.py         # send events
+#   python consumer.py         # consume with windowing
+#   docker compose down
+###############################################################################
+
+services:
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka-broker
+    ports:
+      - "9092:9092"
+    environment:
+      # KRaft mode configuration (no Zookeeper required)
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:29092,EXTERNAL://localhost:9092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-broker:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      CLUSTER_ID: "MWE-kafka-streaming-01"
+    healthcheck:
+      test: /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:29092 > /dev/null 2>&1
+      interval: 5s
+      timeout: 10s
+      retries: 15
+      start_period: 10s
+    networks:
+      - kafkanet
+
+  kafka-init:
+    image: apache/kafka:latest
+    container_name: kafka-init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-broker:29092 \
+        --create --if-not-exists \
+        --topic transactions \
+        --partitions 3 \
+        --replication-factor 1 && \
+      echo '✅ Topic [transactions] created with 3 partitions' && \
+      /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka-broker:29092 --describe --topic transactions"
+    networks:
+      - kafkanet
+
+networks:
+  kafkanet:
+    driver: bridge

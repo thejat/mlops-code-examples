@@ -1,0 +1,86 @@
+============================================================
+SYNTHETIC DATA BENCHMARK
+Reproducible Generation, Hashing, and Scaling Analysis
+============================================================
+
+[1/5] Generating synthetic transaction data (seed=42)...
+      →      1,000 rows  hash=ab03334ac2a0f702  (0.010s)
+      →     10,000 rows  hash=0f63641162f3f7df  (0.095s)
+      →    100,000 rows  hash=5eb60c9c1ec288f1  (0.337s)
+      →  1,000,000 rows  hash=ecd55642f6493866  (3.476s)
+
+[2/5] Verifying reproducibility...
+      → Re-generated 10,000 rows with seed=42
+      → Hash match: ✅  (0f63641162f3f7df)
+      → Different seed (99) → different hash: ✅  (85d299dc4804e62e)
+
+[3/5] Benchmarking pandas feature engineering at each scale...
+
+      Scale: 1,000 rows
+      transform: 0.0034s
+
+      Scale: 10,000 rows
+      transform: 0.0134s
+
+      Scale: 100,000 rows
+      transform: 0.0470s
+
+      Scale: 1,000,000 rows
+      transform: 0.2783s
+
+[4/5] Scaling analysis...
+
+============================================================
+SCALING ANALYSIS
+============================================================
+     Scale          Rows    Time (s)     vs 1x  Efficiency
+  ────────  ────────────  ──────────  ────────  ──────────
+        1x         1,000      0.0034      1.0x      100.0%
+       10x        10,000      0.0134      3.9x      253.7%
+      100x       100,000      0.0470     13.8x      723.4%
+     1000x     1,000,000      0.2783     81.9x     1221.7%
+
+  Key insight: Sub-linear scaling (efficiency > 100%) at small sizes
+  reflects fixed overhead; super-linear slowdown at large sizes
+  reflects memory pressure and cache effects.
+[5/5] Benchmark report
+------------------------------------------------------------
+{
+  "environment": "local_pandas",
+  "seed": 42,
+  "scales": [
+    {
+      "n_rows": 1000,
+      "total_time_sec": 0.0034,
+      "output_rows": 10,
+      "hash": "ab03334ac2a0f702"
+    },
+    {
+      "n_rows": 10000,
+      "total_time_sec": 0.0134,
+      "output_rows": 100,
+      "hash": "0f63641162f3f7df"
+    },
+    {
+      "n_rows": 100000,
+      "total_time_sec": 0.047,
+      "output_rows": 1000,
+      "hash": "5eb60c9c1ec288f1"
+    },
+    {
+      "n_rows": 1000000,
+      "total_time_sec": 0.2783,
+      "output_rows": 10000,
+      "hash": "ecd55642f6493866"
+    }
+  ]
+}
+
+============================================================
+NOTE: For Milestone 4, generate 10M+ rows:
+  python generate_data.py --n_rows 10000000 --seed 42 \
+      --output data/transactions.parquet
+============================================================
+
+NOTE: Timing values will vary by machine. Hash values are deterministic
+and should match exactly when using the same seed.
