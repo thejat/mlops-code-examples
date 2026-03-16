@@ -1,0 +1,70 @@
+============================================================
+ASYNC CONCURRENCY PATTERNS DEMO
+============================================================
+
+--- Demo 1: Sequential Execution ---
+
+  Running 3 tasks sequentially (1s each)...
+    Task 1: completed in 1.0s
+    Task 2: completed in 1.0s
+    Task 3: completed in 1.0s
+
+  Total time: 3.00s (expected ~3.0s)
+  Explanation: Each await completes before the next starts.
+
+--- Demo 2: Concurrent Execution (asyncio.gather) ---
+
+  Running 3 tasks concurrently (1s each)...
+    Task 1: completed in 1.0s
+    Task 2: completed in 1.0s
+    Task 3: completed in 1.0s
+
+  Total time: 1.00s (expected ~1.0s)
+  Explanation: All tasks run during the same await period.
+
+--- Demo 3: Common Mistake (blocking sleep) ---
+
+  Running 3 tasks with time.sleep() inside asyncio.gather()...
+  (This should be concurrent but ISN'T because sleep blocks!)
+
+    Task 1: completed in 0.5s
+    Task 2: completed in 0.5s
+    Task 3: completed in 0.5s
+
+  Total time: 1.50s (expected ~0.5s, got ~1.5s!)
+  Explanation: time.sleep() blocks the event loop — nothing
+  else can run. Use asyncio.sleep() for async code.
+
+  ❌ WRONG: time.sleep(5)     # Blocks everything
+  ✅ RIGHT: await asyncio.sleep(5)  # Yields control
+
+--- Demo 4: Semaphore-Limited Concurrency ---
+
+  Running 6 tasks with max 2 concurrent...
+  (Simulates limiting concurrent model inference calls)
+
+    Task 0: ran for 0.50s
+    Task 1: ran for 0.50s
+    Task 2: ran for 0.50s
+    Task 3: ran for 0.50s
+    Task 4: ran for 0.50s
+    Task 5: ran for 0.50s
+
+  Total time: 1.50s
+  Expected: ~1.5s (6 tasks / 2 concurrent × 0.5s each)
+  Without semaphore: ~0.5s (all 6 concurrent)
+
+  Use case: Limit concurrent connections to Redis, GPU, or
+  external APIs to avoid resource exhaustion.
+
+============================================================
+SUMMARY
+============================================================
+  Sequential:     3.00s  (baseline)
+  Concurrent:     1.00s  (3.0x speedup)
+  Blocking (bug): 1.50s  (no speedup — event loop blocked)
+  Semaphore (2):  1.50s  (controlled concurrency)
+
+  Key takeaway: Use await + asyncio.gather() for concurrent I/O.
+  Never use time.sleep() in async code — it blocks everything.
+============================================================

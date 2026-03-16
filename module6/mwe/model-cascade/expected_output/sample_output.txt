@@ -1,0 +1,85 @@
+============================================================
+MODEL CASCADE & GRACEFUL DEGRADATION DEMO
+============================================================
+
+  This demo shows two orthogonal routing policies:
+  1. Complexity-based routing (which model to use)
+  2. Load-based degradation (when to downgrade)
+  In production, they compose: route by complexity first,
+  then apply load-based overrides if needed.
+
+--- Demo 1: Complexity-Based Routing (Model Cascade) ---
+
+  Prompt                                             Complexity Model     Cost
+  ---------------------------------------------------------------------------
+  What is AI?                                        simple     7b     $0.001
+  Define machine learning.                           simple     7b     $0.001
+  How does Python work?                              simple     7b     $0.001
+  Explain the difference between supervised and unsu medium     13b    $0.005
+  Compare and contrast transformer architectures wit complex    70b    $0.020
+  What is gradient descent?                          simple     7b     $0.001
+  Step by step, derive the backpropagation algorithm complex    70b    $0.020
+  Summarize this article.                            simple     7b     $0.001
+  Hello!                                             simple     7b     $0.001
+  Write a Python function to sort a list.            simple     7b     $0.001
+
+  Cascade total cost:    $0.052
+  Always-70B total cost: $0.200
+  Savings:               74%
+
+  Key insight: Most traffic is simple queries that a 7B model
+  handles well. Routing saves cost without sacrificing quality
+  on complex requests.
+
+--- Demo 2: Load-Based Degradation (Graceful Degradation) ---
+
+  Load level: Normal (50%)
+  Request              Assigned   Actual     Policy                   
+  -----------------------------------------------------------------
+  Simple query         7b         7b         normal                   
+  Medium query         13b        13b        normal                   
+  Complex query        70b        70b        normal                   
+  Another complex      70b        70b        normal                   
+  Simple again         7b         7b         normal                   
+                                             Total cost: $0.047
+
+  Load level: High (90%)
+  Request              Assigned   Actual     Policy                   
+  -----------------------------------------------------------------
+  Simple query         7b         7b         normal                   
+  Medium query         13b        13b        normal                   
+  Complex query        70b        13b        degraded (cap at 13b)    
+  Another complex      70b        13b        degraded (cap at 13b)    
+  Simple again         7b         7b         normal                   
+                                             Total cost: $0.017
+
+  Load level: Critical (98%)
+  Request              Assigned   Actual     Policy                   
+  -----------------------------------------------------------------
+  Simple query         7b         7b         emergency (all → 7b)     
+  Medium query         13b        7b         emergency (all → 7b)     
+  Complex query        70b        7b         emergency (all → 7b)     
+  Another complex      70b        7b         emergency (all → 7b)     
+  Simple again         7b         7b         emergency (all → 7b)     
+                                             Total cost: $0.005
+
+  Key insight: Under heavy load, downgrading models maintains
+  availability at the cost of response quality. This is
+  preferable to rejecting requests or timing out.
+
+============================================================
+SUMMARY
+============================================================
+
+  Model tier characteristics:
+  Model       Latency   Cost/req Quality     
+  ------------------------------------------
+  7b             50ms $   0.001 basic       
+  13b           100ms $   0.005 good        
+  70b           300ms $   0.020 excellent   
+
+  Policies are orthogonal:
+  - Complexity routing: decides WHICH model fits the task
+  - Load degradation:   overrides WHEN system is stressed
+  - Combined: route_by_complexity() → handle_overload()
+============================================================

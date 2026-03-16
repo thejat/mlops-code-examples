@@ -1,0 +1,56 @@
+============================================================
+INFERENCE CACHING DEMO
+============================================================
+
+--- Demo 1: Cache Hits and Misses ---
+
+  [                MISS]   300.3ms | What is machine learning?
+  [                MISS]   300.2ms | Explain neural networks.
+  [                 HIT]     0.0ms | What is machine learning?
+  [                 HIT]     0.0ms | What is machine learning?
+  [                 HIT]     0.0ms | Explain neural networks.
+  [                MISS]   300.2ms | What is deep learning?
+
+  Cache hit rate: 50%
+  Entries in cache: 3
+
+--- Demo 2: Cache Bypass (temperature > 0) ---
+
+  [BYPASS (temperature > 0)]   300.1ms | temp=0.7 | Write a poem about AI.
+  [BYPASS (temperature > 0)]   300.3ms | temp=0.7 | Write a poem about AI.
+  [                MISS]   300.5ms | temp=0.0 | Write a poem about AI.
+  [                 HIT]     0.1ms | temp=0.0 | Write a poem about AI.
+
+--- Demo 3: TTL Expiration ---
+
+  Immediately after caching:  [HIT]
+  Waiting 2.5 seconds for TTL expiry...
+  After TTL expiry:           [MISS (expired)]
+
+--- Demo 4: Hashed Keys (no plaintext stored) ---
+
+  Prompt:     'What is the meaning of life?'
+  Cache key:  'llm:3e98e9927a3abd9a94f79d2c939488451c393567e2d5d18d6f9e9e4ce9b798da'
+  Key length: 68 chars
+
+  ❌ Anti-pattern (plaintext key):
+     key = 'What is the meaning of life?'  ← exposes user data!
+
+  ✅ Hashed key (this demo):
+     key = 'llm:3e98e9927a3abd9a94f79d2c939488451c393567e2d5d1...'
+
+  Note: Hashing avoids accidental plaintext exposure but is
+  not a substitute for encryption or access control on
+  sensitive data.
+
+============================================================
+SUMMARY
+============================================================
+  Total requests:   12
+  Cache hits:       5
+  Cache misses:     5
+  Cache bypasses:   2
+  TTL evictions:    1
+  Hit rate:         50%
+  Entries in cache: 4
+============================================================

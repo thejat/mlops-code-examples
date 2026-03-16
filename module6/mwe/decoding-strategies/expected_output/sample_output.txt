@@ -1,0 +1,63 @@
+============================================================
+DECODING STRATEGIES DEMO
+============================================================
+
+  Base Logit Distribution (temperature=1.0)
+  Token            Probability Bar
+  ---------------------------------------------
+  the                  39.39%  ███████████████
+  is                   23.89%  █████████
+  machine               8.79%  ███
+  learning              6.51%  ██
+  a                     5.33%  ██
+  model                 4.36%  █
+  data                  3.23%  █
+  .                     1.96%  
+
+--- Temperature Effect on Distribution ---
+
+  Temperature = 0.3
+    Top token: 'the' at 83.3%
+    Entropy: 0.50 (higher = more random)
+    Top 5: the(83.3%), is(15.7%), machine(0.6%), learning(0.2%), a(0.1%)
+
+  Temperature = 1.0
+    Top token: 'the' at 39.4%
+    Entropy: 1.89 (higher = more random)
+    Top 5: the(39.4%), is(23.9%), machine(8.8%), learning(6.5%), a(5.3%)
+
+  Temperature = 2.0
+    Top token: 'the' at 19.9%
+    Entropy: 2.55 (higher = more random)
+    Top 5: the(19.9%), is(15.5%), machine(9.4%), learning(8.1%), a(7.3%)
+
+--- Sampling Comparison ---
+
+  Sampling 20 tokens with each strategy:
+
+  Strategy      Unique     Most Common Sample Tokens
+  ----------------------------------------------------------------------
+  Greedy           1/20          the(20) the the the the the the the the
+  Temp=0.3         2/20          the(17) the the is the the is the the
+  Temp=0.7         5/20          the(12) is the data machine is the the the
+  Temp=1.5         8/20          the( 5) is data learning a data model is a
+  Top-k=3          2/20           is(10) is the is is is is is the
+  Top-k=8          5/20          the(11) is the machine the the the is a
+  Top-p=0.5        2/20           is(10) is is the is is is the the
+  Top-p=0.9        5/20          the(10) is is the the the is the the
+
+============================================================
+STRATEGY COMPARISON
+============================================================
+
+  Strategy       Speed      Deterministic   Best For
+  -------------------------------------------------------
+  Greedy         Fastest    Yes             Factual Q&A
+  Temperature    Fast       No              Creative writing
+  Top-k          Medium     No              Brainstorming
+  Top-p          Medium     No              General chat
+
+  Key insight: Greedy is fastest and deterministic.
+  Sampling adds latency but improves diversity.
+  For caching, only greedy (temp=0) gives deterministic results.
+============================================================

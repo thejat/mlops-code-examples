@@ -1,0 +1,105 @@
+
+
+========================================================================
+INFERENCE COST CALCULATOR
+========================================================================
+
+--- The Master Cost Formula ---
+
+  Cost per request ($) =
+    output_tokens × time_per_token_sec × (gpu_cost_per_hour / 3600)
+    ÷ batch_size
+    × (1 - cache_hit_rate)
+
+  Dimensional analysis:
+    tokens × sec/token × $/hour × hour/3600sec ÷ batch × (1-hit_rate)
+    = $ per request
+
+--- Baseline: Unoptimized Serving ---
+
+  Configuration:
+    Model: 7B FP16 on A100 80GB
+    Throughput: 100 tokens/sec
+    GPU cost: $4.50/hour
+    Batch size: 1 (no batching)
+    Cache hit rate: 0%
+
+  Cost per request (200 tokens): $0.0025
+  Cost per million tokens:       $12.50
+
+--- Optimization Impact (each applied cumulatively) ---
+
+  Optimization                            $/M tokens  Relative  Savings
+  --------------------------------------------------------------------
+  Baseline (unoptimized)                 $    12.50     1.00x      0%
+  + FP8 Quantization (2x faster)         $     6.25     0.50x     50%
+  + Continuous Batching (8x)             $     0.78     0.06x     94%
+  + Response Caching (25%)               $     0.59     0.05x     95%
+  + Reserved Instance (-33%)             $     0.39     0.03x     97%
+
+--- API vs Self-Hosted Comparison ---
+
+  Self-hosted (7B, FP8, batched, cached): $0.59/M tokens
+
+  API Provider                    $/M tokens  vs Self-Host
+  --------------------------------------------------------
+  GPT-3.5 Turbo (output)         $     1.50     2.6x more
+  GPT-4o mini (output)           $     0.60     1.0x more
+  Claude 3.5 Haiku (output)      $     1.00     1.7x more
+
+--- Break-Even Analysis: When to Self-Host ---
+
+  API tier: GPT-4o mini ($0.60/M)
+     Monthly Tokens   API Cost  Self-Host      Ops   Total SH     Winner
+    -------------------------------------------------------------------
+                 1M $       1 $   3,285 $ 2,000 $   5,285        API
+                10M $       6 $   3,285 $ 2,000 $   5,285        API
+               100M $      60 $   3,285 $ 2,000 $   5,285        API
+              1000M $     600 $   3,285 $ 2,000 $   5,285        API
+
+  API tier: GPT-4 class ($15/M)
+     Monthly Tokens   API Cost  Self-Host      Ops   Total SH     Winner
+    -------------------------------------------------------------------
+                 1M $      15 $   3,285 $ 2,000 $   5,285        API
+                10M $     150 $   3,285 $ 2,000 $   5,285        API
+               100M $   1,500 $   3,285 $ 2,000 $   5,285        API
+              1000M $  15,000 $   3,285 $ 2,000 $   5,285  Self-host
+
+  Key insight: Break-even depends heavily on API pricing tier.
+  Cheap APIs (GPT-4o mini) beat self-hosting at most volumes.
+  Expensive APIs (GPT-4 class) lose to self-hosting above ~350M tokens/month.
+  Self-hosting also includes $2,000/month ops overhead (DevOps labor).
+
+--- Case Study: 10x Cost Reduction ---
+
+  Step                                    Daily Cost    Monthly  Reduction
+  ------------------------------------------------------------------------
+  Month 0: Baseline (API)                $   15,000 $ 450,000       1.0x
+  Month 1: Self-host with vLLM           $      576 $  17,280      26.0x
+  Month 2: FP8 Quantization              $      288 $   8,640      52.1x
+  Month 3: Add Caching (30% hit rate)    $      218 $   6,548      68.7x
+  Month 4: Model Cascade                 $      168 $   5,036      89.4x
+
+  Total reduction: ~89x from baseline
+  Key: Each optimization compounds on previous ones.
+
+========================================================================
+KEY TAKEAWAYS
+========================================================================
+
+  Every variable in the cost equation is an optimization lever:
+
+  Variable           Impact      How to Optimize
+  ------------------------------------------------------------
+  output_tokens      Linear      Limit max_tokens, shorter prompts
+  time_per_token     Linear      Quantization, faster GPU
+  gpu_cost_per_hour  Linear      Reserved instances, spot pricing
+  batch_size         Inverse     Continuous batching
+  cache_hit_rate     Inverse     Better caching, semantic cache
+
+  Decision guide (for GPT-4 class API pricing):
+  - < 350M tokens/month → Use APIs (self-hosting overhead exceeds savings)
+  - 350M–1B tokens/month → Evaluate self-hosting (break-even zone)
+  - > 1B tokens/month   → Self-host, optimize aggressively
+  Note: With cheap APIs (GPT-4o mini), thresholds shift much higher.
+========================================================================

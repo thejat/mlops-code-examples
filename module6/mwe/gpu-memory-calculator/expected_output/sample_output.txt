@@ -1,0 +1,56 @@
+========================================================================
+GPU MEMORY CALCULATOR
+========================================================================
+
+--- Model Memory at Different Precisions ---
+
+  Model          FP32  FP16/BF16       INT8       INT4
+  ----------------------------------------------------
+  7B           28.0 GB     14.0 GB      7.0 GB      3.5 GB
+  13B          52.0 GB     26.0 GB     13.0 GB      6.5 GB
+  70B         280.0 GB    140.0 GB     70.0 GB     35.0 GB
+
+  Formula: Memory (GB) = Parameters × Bytes_per_param / 1e9
+
+--- KV Cache Memory per Request ---
+
+  Model                            ctx=2048     ctx=4096     ctx=8192
+  -------------------------------------------------------------------
+  7B (32 layers, d=4096)            1.07 GB      2.15 GB      4.29 GB
+  13B (40 layers, d=5120)           1.68 GB      3.36 GB      6.71 GB
+  70B (80 layers, d=8192)           5.37 GB     10.74 GB     21.47 GB
+
+  Formula: KV cache = 2 × layers × context × hidden_dim × 2 bytes / 1e9
+
+--- Maximum Batch Size per GPU ---
+
+  Reference: 7B model FP16 (14 GB weights)
+             KV cache per request at ctx=4096: 2.15 GB
+             Safety margin: 85%
+
+  GPU              Memory  Available  Max Batch    Tok/s
+  ------------------------------------------------------
+  A100 40GB          40 GB     20.0 GB          9     107
+  A100 80GB          80 GB     54.0 GB         25     143
+  H100 80GB          80 GB     54.0 GB         25     239
+
+--- Precision Impact on Serving Capacity (A100 80GB, 7B model) ---
+
+  Precision     Model Mem  Max Batch    Tok/s   Relative
+  ------------------------------------------------------
+  FP32             28.0 GB          9      71       1.0x
+  FP16/BF16        14.0 GB         25     143       2.0x
+  INT8              7.0 GB         56     286       4.0x
+  INT4              3.5 GB        120     571       8.0x
+
+  Key insight: Quantization reduces model size → more bandwidth
+  for token generation AND more memory for concurrent requests.
+
+========================================================================
+KEY FORMULAS
+========================================================================
+  Model memory (GB) = Parameters × Bytes_per_param / 1e9
+  KV cache (GB)     = 2 × layers × context × hidden × bytes / 1e9
+  Max batch size    = (GPU_mem × 0.85 - model_mem) / kv_per_request
+  Tokens/sec        = Memory_bandwidth (GB/s) / model_mem (GB)
+========================================================================

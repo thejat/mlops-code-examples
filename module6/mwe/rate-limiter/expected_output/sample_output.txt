@@ -1,0 +1,85 @@
+============================================================
+RATE LIMITER DEMO
+============================================================
+
+  Rate limit: 20 requests per minute per user
+  Using simulated clock for instant demonstration
+
+--- Demo 1: Normal User (10 requests) ---
+
+  User: user_normal
+  Sent: 10 requests
+  Accepted: 10
+  Rejected: 0
+  Reject rate: 0%
+  Result: ✅ All requests accepted (under limit)
+
+--- Demo 2: Power User (20 requests, exactly at limit) ---
+
+  User: user_power
+  Sent: 20 requests
+  Accepted: 20
+  Rejected: 0
+  Reject rate: 0%
+  Result: ✅ Just barely under/at the limit
+
+--- Demo 3: Abusive User (50 requests, over limit) ---
+
+  User: user_abusive
+  Sent: 50 requests
+  Accepted: 20
+  Rejected: 30
+  Reject rate: 60%
+  Result: 🚫 30 requests blocked!
+
+--- Demo 4: User Isolation ---
+
+  User A: 10 accepted, then 5 rejected (at limit)
+  User B: 5 accepted (separate counter, under limit)
+  Result: ✅ User A's traffic does NOT affect User B
+
+--- Demo 5: Sliding Window (old requests age out) ---
+
+  This is the KEY property of a sliding window rate limiter:
+  as time advances, old requests leave the window, freeing quota.
+
+  t=0s: Send 5 requests (fills quota of 5/min)...
+    Accepted: 5, Window count: 5/5
+
+  t=0s: Try 1 more request...
+    Accepted: 0, Rejected: 1
+    Status: 🚫 Quota exhausted
+
+  t=30s: Advance 30 seconds, try 1 request...
+    Window count before: 5/5
+    Accepted: 0, Rejected: 1
+    Status: 🚫 Original 5 requests still in window (only 30s old)
+
+  t=61s: Advance to 61 seconds total...
+    Window count: 0/5 (original requests aged out!)
+    Send 3 new requests → Accepted: 3
+    Window count now: 3/5
+    Status: ✅ Quota refreshed — sliding window works!
+
+  t=61s: Try 4 more requests (only 2 quota remaining)...
+    Accepted: 2, Rejected: 2
+    Status: 2 accepted (quota), 2 rejected (over limit)
+
+============================================================
+SUMMARY
+============================================================
+
+  Rate limit: 20 requests/minute
+
+  User               Sent  Accepted  Rejected  Reject%
+  --------------------------------------------------
+  user_normal          10        10         0      0%
+  user_power           20        20         0      0%
+  user_abusive         50        20        30     60%
+
+  Governance takeaways:
+  - Rate limiting prevents abuse and ensures fair access
+  - Per-user limits isolate users from each other
+  - Sliding window continuously ages out old requests (Demo 5)
+  - In production, use Redis-backed distributed rate limiting
+============================================================
