@@ -1,0 +1,99 @@
+============================================================
+Embedding Similarity MWE — Exploring Vector Representations
+============================================================
+
+Loading model: all-MiniLM-L6-v2...
+Model loaded in 1.23s (dimension: 384)
+
+============================================================
+Demo 1: Cosine Similarity vs L2 Distance
+============================================================
+
+  Query: "How do ML models learn?"
+
+  Rank  Cosine (higher=better)                         L2 (lower=better)
+  ————  ————————————————————————————————————————————— —————————————————————————————————————————————
+     1  Machine learning models learn patt...  0.6842   Machine learning models learn patt...  0.7948
+     2  Neural networks update weights thr...  0.4523   Neural networks update weights thr...  1.0461
+     3  RAG combines retrieval with langua...  0.1234   RAG combines retrieval with langua...  1.3231
+     4  Vector databases enable fast simil...  0.0987   Vector databases enable fast simil...  1.3421
+     5  Docker containers package applicat...  0.0456   Docker containers package applicat...  1.3812
+
+  Key insight: For normalized embeddings, cosine and L2 produce
+  the same ranking. Cosine is scale-invariant; L2 depends on magnitude.
+
+============================================================
+Demo 2: Semantic vs Keyword Matching
+============================================================
+
+  Text A                              Text B                              Cosine   Keyword
+  ——————————————————————————————————— ——————————————————————————————————— ———————  ————————
+  automobile                          car                                  0.721     0.000  ←
+  machine learning                    AI model training                    0.634     0.000  ←
+  happy                               joyful                               0.598     0.000  ←
+  dog                                 cat                                  0.432     0.000  ←
+  retrieval-augmented generation      RAG                                  0.512     0.000  ←
+  Python programming                  Python snake                         0.453     0.500
+  bank account                        river bank                           0.387     0.333
+
+  ← = large gap between semantic and keyword scores
+  Embeddings understand 'automobile'='car' with zero word overlap.
+  But also: 'Python programming' vs 'Python snake' are distinguished.
+
+============================================================
+Demo 3: Embedding Dimension Inspection
+============================================================
+
+  Model: all-MiniLM-L6-v2
+  Embedding dimension: 384
+  Data type: float32
+
+  Text: "RAG combines retrieval with generation."
+    First 10 dims: [-0.0234, 0.0567, -0.0891, 0.0123, ...]
+    Magnitude:      1.0000
+    Min value:      -0.1234
+    Max value:       0.1567
+    Mean:           -0.0012
+    Std:             0.0534
+    Non-zero dims:  384/384 (100% dense)
+
+  Key insight: Sentence-transformer embeddings are dense —
+  nearly all dimensions carry information (unlike sparse TF-IDF).
+
+============================================================
+Demo 4: Batch Encoding Performance
+============================================================
+
+  Encoding 50 texts...
+
+  Method                       Time (s)   Per text (ms)
+  ————————————————————————————— —————————— ——————————————
+  One-at-a-time                     2.345          46.9
+  Batch (size=8)                    0.456           9.1
+  Batch (size=32)                   0.234           4.7
+
+  Batch speedup: 10.0× faster than one-at-a-time
+  Key insight: Always batch encode in production. The model's
+  internal parallelism makes batching significantly faster.
+
+============================================================
+Demo 5: Cross-Domain Similarity
+============================================================
+How similar are texts from different domains?
+
+  Average cosine similarity between domains:
+
+                  MLOps         RAG     Cooking      Sports
+  ——————————  ——————————  ——————————  ——————————  ——————————
+       MLOps       0.456       0.312       0.045       0.067
+         RAG       0.312       0.523       0.034       0.054
+     Cooking       0.045       0.034       0.678       0.089
+      Sports       0.067       0.054       0.089       0.543
+
+  Key insight: Related domains (MLOps ↔ RAG) are closer in
+  embedding space than unrelated domains (RAG ↔ Cooking).
+  This structure is what makes semantic search work.
+
+============================================================
+MWE Complete — Embedding similarity patterns demonstrated!
+============================================================

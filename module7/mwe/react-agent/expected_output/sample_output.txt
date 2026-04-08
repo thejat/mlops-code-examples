@@ -1,0 +1,119 @@
+============================================================
+ReAct Agent MWE — Reasoning + Acting Loop
+============================================================
+
+============================================================
+Demo 1: Single-Step ReAct
+============================================================
+Question answered in one thought → action → observation cycle.
+
+  Query: "What is RAG?"
+  Status: success | Steps: 2 | Duration: 0.0ms
+  ------------------------------------------------------
+  Step 1:
+    💭 Thought:     I'll look up information about this topic.
+    🔧 Action:      lookup("What is RAG?")
+    👁 Observation: RAG (Retrieval-Augmented Generation) grounds LLM outputs in retrieved documents....
+  Step 2:
+    💭 Thought:     I have the information needed to answer.
+    👁 Observation: Final answer formulated.
+    ✅ Final step
+  ------------------------------------------------------
+  Answer: Based on my research: RAG (Retrieval-Augmented Generation) grounds LLM outputs in retrieved document...
+
+============================================================
+Demo 2: Multi-Step ReAct
+============================================================
+Comparison query requiring two lookups before answering.
+
+  Query: "Compare RAG and chunking"
+  Status: success | Steps: 3 | Duration: 0.0ms
+  ------------------------------------------------------
+  Step 1:
+    💭 Thought:     Comparison query — I'll look up the first topic: rag
+    🔧 Action:      lookup("rag")
+    👁 Observation: RAG (Retrieval-Augmented Generation) grounds LLM outputs in retrieved documents....
+  Step 2:
+    💭 Thought:     Now I'll look up the second topic: chunking
+    🔧 Action:      lookup("chunking")
+    👁 Observation: Document chunking splits text into 256-512 character segments. Common strategies...
+  Step 3:
+    💭 Thought:     I have the information needed to answer.
+    👁 Observation: Final answer formulated.
+    ✅ Final step
+  ------------------------------------------------------
+  Answer: Based on my research: Document chunking splits text into 256-512 character segments. Common strategi...
+
+============================================================
+Demo 3: Max-Steps Termination
+============================================================
+Agent with max_steps=2 on a query needing 3 steps.
+
+  Query: "Compare RAG and chunking"
+  Status: max_steps | Steps: 2 | Duration: 0.0ms
+  ------------------------------------------------------
+  Step 1:
+    💭 Thought:     Comparison query — I'll look up the first topic: rag
+    🔧 Action:      lookup("rag")
+    👁 Observation: RAG (Retrieval-Augmented Generation) grounds LLM outputs in retrieved documents....
+  Step 2:
+    💭 Thought:     Now I'll look up the second topic: chunking
+    🔧 Action:      lookup("chunking")
+    👁 Observation: Document chunking splits text into 256-512 character segments. Common strategies...
+  ------------------------------------------------------
+  Answer: I reached the maximum number of steps (2). Partial result: Document chunking splits text into 256-51...
+
+  ⚠  Agent terminated early — only completed 2 of
+     the needed steps. In production, max_steps prevents runaway loops.
+
+============================================================
+Demo 4: Tool Error Recovery
+============================================================
+Primary tool fails; agent observes the error.
+
+  Query: "What is FAISS?"
+  Status: success | Steps: 2 | Duration: 0.0ms
+  ------------------------------------------------------
+  Step 1:
+    💭 Thought:     I'll look up information about this topic.
+    🔧 Action:      lookup("What is FAISS?")
+    👁 Observation: ERROR: Service unavailable: connection timeout after 30s
+  Step 2:
+    💭 Thought:     I have the information needed to answer.
+    👁 Observation: Final answer formulated.
+    ✅ Final step
+  ------------------------------------------------------
+  Answer: Based on my research: ERROR: Service unavailable: connection timeout after 30s
+
+  The agent received an error observation from the tool.
+  In a production system, the reasoning step would detect the
+  error and try an alternative tool or return a helpful message.
+
+============================================================
+Demo 5: Trace Export (JSON)
+============================================================
+Run multiple scenarios and export traces for evaluation.
+
+    #  Query                                        Status  Steps
+  ———  ———————————————————————————————————————— —————————— ——————
+    1  What is RAG?                                success      2
+    2  What is embedding?                          success      2
+    3  Search for rag pipeline articles            success      2
+    4  Calculate 256 * 4                           success      2
+
+  Sample JSON trace (scenario 1):
+    {
+        "query": "What is RAG?",
+        "status": "success",
+        "total_duration_ms": 0.01,
+        "num_steps": 2,
+        "final_answer": "Based on my research: RAG ...",
+        "steps": [...]
+    }
+
+  Total traces: 4
+  Export format matches agent-evaluation-tracing.md structure.
+
+============================================================
+MWE Complete — ReAct agent pattern demonstrated!
+============================================================

@@ -1,0 +1,112 @@
+============================================================
+Document Chunking MWE — Comparing Strategies for RAG
+============================================================
+
+============================================================
+Demo 1: Fixed-Size Character Splitting
+============================================================
+Strategy: Cut every 200 characters regardless of content.
+
+  Chunk 0 (200 chars):
+    "Retrieval-Augmented Generation (RAG) is an AI architecture that combines
+retriev..."
+    Ends with: "...ded during training, RAG syste"
+
+  Chunk 1 (200 chars):
+    "ms query external
+knowledge bases at inference time. This approach significantly..."
+    Ends with: "...nents of RAG include a documen"
+
+  Chunk 2 (200 chars):
+    "t store containing chunked text,
+an embedding model to convert text to vectors, ..."
+    Ends with: "...ch
+component introduces latenc"
+
+  Total chunks: 11
+  Size range: 89–200 chars
+  Broken sentence endings: 10/11
+  ⚠  Fixed-size splitting breaks words and sentences at boundaries.
+
+============================================================
+Demo 2: Sentence-Boundary Splitting
+============================================================
+Strategy: Accumulate sentences until chunk exceeds 200 chars.
+
+  Chunk 0 (126 chars):
+    "Retrieval-Augmented Generation (RAG) is an AI architecture that combines retrieval mechanisms with g..."
+
+  Chunk 1 (125 chars):
+    "Instead of relying solely on knowledge encoded during training, RAG systems query external knowledge..."
+
+  Chunk 2 (102 chars):
+    "This approach significantly reduces hallucination by grounding responses in retrieved factual conten..."
+
+  Total chunks: 14
+  Size range: 99–210 chars
+  Avg size: 148 chars
+  Broken sentence endings: 0/14
+  ✓  Sentences are never split, but chunk sizes vary.
+
+============================================================
+Demo 3: Recursive Splitting
+============================================================
+Strategy: Try paragraph breaks first, then sentences, then chars.
+
+  Chunk 0 (145 chars):
+    "Retrieval-Augmented Generation (RAG) is an AI architecture that combines retrieval mechanisms with g..."
+
+  Chunk 1 (142 chars):
+    "solely on knowledge encoded during training, RAG systems query external knowledge bases at inference..."
+
+  Chunk 2 (66 chars):
+    "hallucination by grounding responses in retrieved factual content...."
+
+  Total chunks: 15
+  Size range: 59–195 chars
+  Avg size: 138 chars
+  Broken sentence endings: 8/15
+  ✓  Respects document structure while staying under size limit.
+
+============================================================
+Demo 4: Overlap Comparison
+============================================================
+Compare 0% vs 20% overlap on fixed-size chunks (size=200).
+
+  Metric                      No Overlap  20% Overlap
+  ------------------------- ------------ ------------
+  Chunk count                         11           14
+  Avg chunk size                     190          184
+  Total characters stored           2085         2573
+
+  Storage overhead from overlap: 23.4%
+  ⚠  Overlap preserves boundary context but increases storage + possible duplicate retrievals.
+
+  Boundary example (chunks 0→1):
+    No overlap:   "...ledge encoded during training, RAG syste" | "ms query external
+knowledge bases at inf..."
+    With overlap: "...ledge encoded during training, RAG syste" | "ledge encoded during training, RAG syste..."
+    ↑ Shared text bridges the boundary
+
+============================================================
+Demo 5: Strategy Comparison Summary
+============================================================
+
+  Strategy              Chunks     Avg     Min     Max  Clean%
+  -------------------- ------- ------- ------- ------- -------
+  Fixed-size (200)          11     190      89     200      9%
+  Fixed-size (300)           7     298     288     300     14%
+  Sentence (200)            14     148      99     210    100%
+  Sentence (300)             9     231      99     300    100%
+  Recursive (200)           15     138      59     195     47%
+  Recursive (300)           11     189      48     300     55%
+
+  Key takeaways:
+  • Fixed-size: most chunks, worst boundary quality
+  • Sentence: fewest boundary breaks, variable sizes
+  • Recursive: best balance of structure and size control
+  • Larger chunk size → fewer chunks but less retrieval precision
+
+============================================================
+MWE Complete — Document chunking strategies demonstrated!
+============================================================

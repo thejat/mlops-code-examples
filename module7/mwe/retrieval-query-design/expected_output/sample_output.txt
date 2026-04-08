@@ -1,0 +1,86 @@
+============================================================
+Retrieval Query Design MWE
+============================================================
+
+============================================================
+Demo 1: Top-k Selection Sweep
+============================================================
+How does changing k affect retrieval quality?
+
+  Query: (similar to RAG topic)
+  Relevant docs: {'doc1', 'doc2', 'doc3'}
+
+    k   Retrieved   Precision    Recall  Top docs
+  ———  ——————————  ——————————  ————————  ——————————————————————————————
+    1           1        1.00      0.33  ['doc1']
+    2           2        1.00      0.67  ['doc1', 'doc2']
+    3           3        1.00      1.00  ['doc1', 'doc2', 'doc3']
+    5           5        0.60      1.00  ['doc1', 'doc2', 'doc3', ...]
+    8           8        0.38      1.00  ['doc1', 'doc2', 'doc3', ...]
+   12          12        0.25      1.00  ['doc1', 'doc2', 'doc3', ...]
+
+  Key insight: k=3 finds all relevant docs with highest precision.
+  Increasing k beyond that adds noise without improving recall.
+
+============================================================
+Demo 2: Metadata Filtering
+============================================================
+Filter by category before similarity search.
+
+  Without filter (all categories):
+    doc4   [preprocessing  ] 0.626  Document chunking splits text into ...
+    doc5   [preprocessing  ] 0.547  Recursive character splitting ...
+    doc6   [preprocessing  ] 0.276  Chunk overlap preserves context ...
+    doc2   [architecture   ] 0.261  RAG reduces hallucination ...
+    doc12  [devops         ] 0.049  Python virtual environments ...
+
+  With filter (category='preprocessing'):
+    doc4   [preprocessing  ] 0.626  Document chunking splits text ...
+    doc5   [preprocessing  ] 0.547  Recursive character splitting ...
+    doc6   [preprocessing  ] 0.276  Chunk overlap preserves context ...
+
+  Key insight: Metadata filters reduce search space and improve
+  precision by excluding irrelevant categories before scoring.
+
+============================================================
+Demo 3: Query Expansion
+============================================================
+Add related terms to the query to improve recall.
+
+  Original query: "How does RAG search work?"
+  Expanded query: "search retrieval rag retrieval-augmented generation ..."
+
+  Documents with matches: 3 → 4
+  Query expansion improves recall by matching synonym variations.
+
+============================================================
+Demo 4: Score Thresholding
+============================================================
+Reject results below a similarity threshold.
+
+   Threshold   Kept   Rejected   Avg Score (kept)
+  ——————————  —————  —————————  —————————————————
+         0.0      5          3              0.231
+         0.3      2          6              0.437
+         0.5      1          7              0.540
+         0.7      0          8              0.000
+
+  Key insight: Thresholding at 0.5 removes noise while keeping
+  relevant results. Too aggressive (0.7+) may drop good matches.
+
+============================================================
+Demo 5: Hybrid Search (Keyword + Semantic)
+============================================================
+Combine keyword matching with vector similarity.
+
+  Query: "retrieval augmented generation"
+  Fusion: 60% semantic + 40% keyword
+
+  Hybrid advantages:
+  • Semantic catches paraphrases ('RAG' ↔ 'retrieval-augmented')
+  • Keyword catches exact matches missed by embeddings
+  • Fusion balances both signals for more robust retrieval
+
+============================================================
+MWE Complete — Retrieval query design patterns demonstrated!
+============================================================

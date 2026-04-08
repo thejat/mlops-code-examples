@@ -1,0 +1,94 @@
+============================================================
+RAG Evaluation Metrics MWE
+============================================================
+
+============================================================
+Demo 1 & 2: Precision@k and Recall@k
+============================================================
+
+  Query: "What is RAG and how does it reduce hallucination?"
+  Relevant docs: {'doc1', 'doc5'}
+  Retrieved (ranked): ['doc1', 'doc3', 'doc5', 'doc7', 'doc2']
+
+    k   Precision@k    Recall@k  Relevant found
+  ———  ————————————  ——————————  ————————————————————
+    1          1.00        0.50  {'doc1'}
+    2          0.50        0.50  {'doc1'}
+    3          0.67        1.00  {'doc1', 'doc5'}
+    4          0.50        1.00  {'doc1', 'doc5'}
+    5          0.40        1.00  {'doc1', 'doc5'}
+
+  Key insight: Increasing k improves recall but may lower precision.
+  At k=3, both relevant docs (doc1, doc5) are found → recall=1.0
+
+============================================================
+Demo 3: Mean Reciprocal Rank (MRR)
+============================================================
+
+  MRR measures how quickly the system returns a relevant result.
+
+  Query                                               1st Rel Rank     RR
+  —————————————————————————————————————————————————— ————————————— ——————
+  What is RAG and how does it reduce hallucination               1   1.00
+  How does document chunking work?                               1   1.00
+  What embedding models are used for semantic sear               2   0.50
+  What is grounding in LLM systems?                              1   1.00
+  How do vector databases work?                                  1   1.00
+
+  MRR = 0.900
+  Interpretation: On average, the first relevant doc appears at ~rank 1.1
+
+============================================================
+Demo 4: Groundedness Scoring
+============================================================
+
+  Measures keyword overlap between response and retrieved context.
+
+  Query 1: "What is RAG and how does it reduce hallucination?"
+    Response: "RAG (Retrieval-Augmented Generation) combines retrieval with generation. It redu..."
+    Groundedness: 62% (10/16 content words)
+    Ungrounded words: ['bases', 'external', 'from', 'grounding', 'knowledge', 'retrievalaugmented']
+    Faithful: ✓ (2 supported, 0 flagged)
+
+  Query 2: "How does document chunking work?"
+    Response: "Document chunking splits large documents into smaller segments for embedding. Co..."
+    Groundedness: 71% (12/17 content words)
+    Ungrounded words: ['approaches', 'common', 'documents', 'large', 'splitting']
+    Faithful: ✓ (2 supported, 0 flagged)
+
+  Query 3: "What embedding models are used for semantic search?"
+    Response: "Semantic search uses embedding models like sentence-transformers (e.g., all-Mini..."
+    Groundedness: 59% (10/17 content words)
+    Ungrounded words: ['384dimensional', 'capture', 'search', 'similarity', 'these', 'uses', 'which']
+    Faithful: ✓ (2 supported, 0 flagged)
+
+============================================================
+Demo 5: Full Evaluation Report
+============================================================
+
+  Evaluation over 5 queries at k=3
+
+   #    P@3    R@3     RR   Ground%   Faithful
+  ——  —————  —————  —————  ————————  —————————
+   1   0.67   1.00   1.00      62%          ✓
+   2   0.67   1.00   1.00      71%          ✓
+   3   0.33   0.50   0.50      59%          ✓
+   4   0.67   1.00   1.00      80%          ✓
+   5   0.33   0.50   1.00      71%          ✓
+  ——  —————  —————  —————  ————————  —————————
+  Avg   0.53   0.80   0.90      68%      100%
+
+  Summary:
+    Mean Precision@3: 0.53
+    Mean Recall@3:    0.80
+    MRR:                0.900
+    Avg Groundedness:   68%
+    Faithfulness Rate:  100%
+
+  Diagnostic Guide:
+    ⚠  Low groundedness → response contains claims not in context
+       Fix: improve prompt instructions for grounding
+
+============================================================
+MWE Complete — RAG evaluation metrics demonstrated!
+============================================================

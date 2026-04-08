@@ -1,0 +1,141 @@
+============================================================
+Context Integration MWE — RAG Prompt Construction
+============================================================
+
+============================================================
+Demo 1: Basic RAG Prompt
+============================================================
+A minimal prompt with context, question, and grounding instructions.
+
+  Generated prompt:
+  --------------------------------------------------------
+  | You are a helpful assistant.
+  | 
+  | Answer the question using ONLY the provided context. If the context doesn't contain enough information, say "I cannot find this in the provided documents."
+  | 
+  | Context:
+  | RAG (Retrieval-Augmented Generation) combines retrieval with generation to produce grounded responses. It queries external knowledge bases at inference time to reduce hallucination.
+  | 
+  | The key components of RAG include a document store, an embedding model, a vector database for similarity search, and a language model for generation. Each component must be monitored.
+  | 
+  | Question: What is RAG?
+  | 
+  | Answer:
+  --------------------------------------------------------
+
+  Prompt length: 595 chars (~148 tokens)
+
+============================================================
+Demo 2: Source Attribution with Citations
+============================================================
+Each chunk is numbered with source file and relevance score.
+
+  Generated prompt:
+  --------------------------------------------------------
+  | You are a helpful assistant.
+  | 
+  | Answer the question using ONLY the provided context. If the context doesn't contain enough information, say "I cannot find this in the provided documents."
+  | When citing specific information, reference the source document in brackets, e.g., [source: filename.txt].
+  | 
+  | Context:
+  | [1] (Source: rag_intro.txt, Score: 0.92)
+  | RAG (Retrieval-Augmented Generation) combines retrieval with generation to produce grounded responses. It queries external knowledge bases at inference time to reduce hallucination.
+  | 
+  | [2] (Source: rag_intro.txt, Score: 0.85)
+  | The key components of RAG include a document store, an embedding model, a vector database for similarity search, and a language model for generation. Each component must be monitored.
+  | 
+  | [3] (Source: chunking_guide.txt, Score: 0.78)
+  | Document chunking splits large documents into smaller segments suitable for embedding. Common strategies include fixed-size, sentence-boundary, and recursive character splitting.
+  | 
+  | Question: What are the components of a RAG system?
+  | 
+  | Answer:
+  --------------------------------------------------------
+
+  Why citations matter:
+  • Users can verify claims against source documents
+  • Helps diagnose retrieval quality issues
+  • Required for Milestone 6 grounding evaluation
+
+============================================================
+Demo 3: Multi-Chunk Formatting Styles
+============================================================
+Compare three formatting styles for the same 4 chunks.
+
+  Style: 'plain' (723 chars)
+    RAG (Retrieval-Augmented Generation) combines retrieval with ...
+    ... (7 total lines)
+
+  Style: 'labeled' (848 chars)
+    --- Source: rag_intro.txt ---
+    RAG (Retrieval-Augmented Generation) combines retrieval with ...
+    ... (11 total lines)
+
+  Style: 'numbered' (892 chars)
+    [1] (Source: rag_intro.txt, Score: 0.92)
+    RAG (Retrieval-Augmented Generation) combines retrieval with ...
+    ... (11 total lines)
+
+  Trade-offs:
+  • Plain: shortest, no source tracking, hardest to evaluate
+  • Labeled: clear sources, moderate length, easy to read
+  • Numbered: best for citation, LLM can reference [1], [2], etc.
+
+============================================================
+Demo 4: Insufficient Context Handling
+============================================================
+
+  Case 1: No context retrieved
+  --------------------------------------------------------
+  | You are a helpful assistant.
+  | 
+  | No relevant context was found in the knowledge base for this question.
+  | Respond by acknowledging that you cannot find the information ...
+  | 
+  | Question: What is the capital of France?
+  | 
+  | Answer:
+  --------------------------------------------------------
+
+  Case 2: Irrelevant context (scores < 0.3)
+  --------------------------------------------------------
+  | [1] (Source: devops_guide.txt, Score: 0.25)
+  | Kubernetes orchestrates container deployment across clusters.
+  | 
+  | [2] (Source: python_basics.txt, Score: 0.18)
+  | Python virtual environments isolate project dependencies.
+  | ...
+  --------------------------------------------------------
+
+  Key lesson: The grounding instruction tells the LLM to say
+  "I cannot find this" rather than hallucinating an answer.
+  In production, also filter chunks by score threshold before prompting.
+
+============================================================
+Demo 5: Context Window Budget Analysis
+============================================================
+
+  Question: "What is RAG and how does it work?"
+
+   Chunks   Prompt Chars   ~Tokens   % of 4k   % of 8k
+  -------  -------------  --------  --------  --------
+        1            579       144      3.5%      1.8%
+        2            805       201      4.9%      2.5%
+        3           1031       257      6.3%      3.1%
+        4           1249       312      7.6%      3.8%
+
+  Budget allocation for a 4096-token model:
+    System + instructions:  ~100 tokens
+    Question:               ~20 tokens
+    Reserved for response:  ~500 tokens
+    Available for context:  ~3476 tokens (~13,900 chars)
+    At ~200 chars/chunk:    ~69 chunks max
+
+  ⚠  With small context windows (4k), you must either:
+     • Limit top-k retrieval (fewer but more relevant chunks)
+     • Use shorter chunks (sacrifice context for precision)
+     • Summarize chunks before inserting into prompt
+
+============================================================
+MWE Complete — Context integration patterns demonstrated!
+============================================================
