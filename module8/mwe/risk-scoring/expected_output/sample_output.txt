@@ -1,0 +1,121 @@
+============================================================
+Risk Scoring MWE — NIST AI RMF Risk Assessment
+============================================================
+============================================================
+Demo 1: Risk Matrix (Likelihood × Severity)
+============================================================
+
+                          SEVERITY
+              ┌──────┬──────┬──────┬──────┬──────┐
+              │  1   │  2   │  3   │  4   │  5   │
+              │Negl. │Minor │Mod.  │Major │Crit. │
+        ┌─────┼──────┼──────┼──────┼──────┼──────┤
+  LIKE- │  5  │ 5 MED│10 HIG│15 HIG│20 CRI│25 CRI│
+  LIHOOD│  4  │ 4 LOW│ 8 MED│12 HIG│16 CRI│20 CRI│
+        │  3  │ 3 LOW│ 6 MED│ 9 MED│12 HIG│15 HIG│
+        │  2  │ 2 LOW│ 4 LOW│ 6 MED│ 8 MED│10 HIG│
+        │  1  │ 1 LOW│ 2 LOW│ 3 LOW│ 4 LOW│ 5 MED│
+        └─────┴──────┴──────┴──────┴──────┴──────┘
+
+  Risk Level Thresholds:
+    LOW:      1-4   (acceptable, monitor)
+    MEDIUM:   5-9   (investigate, plan mitigation)
+    HIGH:     10-15 (active mitigation required)
+    CRITICAL: 16-25 (block deployment until addressed)
+
+============================================================
+Demo: Traditional ML Risk Register
+============================================================
+
+  ID    Risk                                  L×S  Score    Level  Treatment
+  ————— ——————————————————————————————————— ————— —————— ———————— ——————————
+  R001  Demographic bias in approvals         3×4     12     HIGH   mitigate
+  R002  Feature drift degrades predictions    4×3     12     HIGH   mitigate
+  R003  Model used for unintended purpose     2×5     10     HIGH   mitigate
+  R004  No manual override for high-stakes    3×4     12     HIGH   mitigate
+  R005  Vendor changes schema or terms        2×3      6   MEDIUM   transfer
+
+  Highest risk: R001 — Demographic bias in approvals
+  Score: 12 (HIGH)
+  Category: Bias
+  Owner: ML Team Lead
+  Review trigger: Fairness ratio < 0.8 on any protected group
+  Controls:
+    • Quarterly fairness audits with disparate impact analysis
+    • Alert when demographic parity ratio drops below 0.8
+    • Human appeal path for denied applicants
+
+============================================================
+Demo: LLM/RAG Additional Risks
+============================================================
+
+  ID    Risk                                  L×S  Score    Level  Treatment
+  ————— ——————————————————————————————————— ————— —————— ———————— ——————————
+  R006  Prompt injection bypasses safety co   3×4     12     HIGH   mitigate
+  R007  Knowledge base staleness causes out   4×3     12     HIGH   mitigate
+  R008  Sensitive data leaks through LLM co   3×5     15     HIGH   mitigate
+
+  Highest risk: R008 — Sensitive data leaks through LLM context
+  Score: 15 (HIGH)
+  Category: Compliance
+  Owner: Security Lead
+  Review trigger: PII pattern detected in output log or user report
+  Controls:
+    • PII scrubbing at document ingestion time
+    • Access control on retrieval index by sensitivity level
+    • Output scanning for PII patterns before response
+    • Data classification for all indexed documents
+
+============================================================
+Demo 4: Inherent vs Residual Risk
+============================================================
+
+  After applying controls, residual risk should decrease:
+
+  ID    Risk                            Inherent  Residual  Reduction
+  ————— —————————————————————————————— ————————— ————————— ——————————
+  R001  Demographic bias in approvals    12 HIGH    6 MEDIUM   -6 (50%)
+  R002  Feature drift degrades predict   12 HIGH    6 MEDIUM   -6 (50%)
+  R003  Model used for unintended purp   10 HIGH   10 HIGH    no data
+  R004  No manual override for high-st   12 HIGH   12 HIGH    no data
+  R005  Vendor changes schema or terms    6 MEDIUM    6 MEDIUM    no data
+  R006  Prompt injection bypasses safe   12 HIGH    6 MEDIUM   -6 (50%)
+  R007  Knowledge base staleness cause   12 HIGH    4  LOW   -8 (67%)
+  R008  Sensitive data leaks through L   15 HIGH    4  LOW  -11 (73%)
+
+============================================================
+Demo 5: Deployment Gate Decision
+============================================================
+
+  Evaluating 8 risks for deployment readiness:
+
+  Check                                             Result
+  ————————————————————————————————————————————— ——————————
+  No CRITICAL risks without mitigation              ✓ PASS
+  All risks have assigned owners                    ✓ PASS
+  All risks have defined controls                   ✓ PASS
+  HIGH risks have residual assessment               ✗ FAIL
+
+  ┌──────────────────────────────────────────────────┐
+  │ Decision: PROCEED WITH CONDITIONS                │
+  │ Complete residual risk assessment for HIGH risks │
+  └──────────────────────────────────────────────────┘
+
+============================================================
+Demo 6: Treatment Strategy Summary
+============================================================
+
+  Treatment distribution across 8 risks:
+
+  mitigate   ████████████████████████████ 7
+  transfer   ████ 1
+
+  Treatment decision guide:
+    MITIGATE — Add controls to reduce likelihood or severity
+    ACCEPT   — Document low residual risk; sign off explicitly
+    TRANSFER — Use contracts, insurance, or vendor SLAs
+    AVOID    — Remove or redesign the feature entirely
+
+============================================================
+MWE Complete — AI risk scoring demonstrated!
+============================================================

@@ -1,0 +1,139 @@
+============================================================
+Model Card Generator MWE — Programmatic ML Documentation
+============================================================
+============================================================
+Demo 1: Building a Model Card
+============================================================
+
+  Model: Customer Churn Predictor v2.1.0
+  Type: Binary Classification
+  Framework: scikit-learn (Random Forest)
+  Owner: Data Science Team
+  Training data: 450,000 records, 47 features
+  Primary uses: 3
+  Limitations: 4
+  Subgroups analyzed: ['Enterprise', 'SMB', 'Consumer']
+
+============================================================
+Demo 2: Markdown Export
+============================================================
+
+  Generated 89 lines of markdown documentation
+  Document size: 2723 characters
+
+  --- Preview (first 40 lines) ---
+
+  # Model Card: Customer Churn Predictor
+  
+  ## Model Details
+  
+  - **Model Name:** Customer Churn Predictor
+  - **Version:** 2.1.0
+  - **Type:** Binary Classification
+  - **Framework:** scikit-learn (Random Forest)
+  - **Owner:** Data Science Team
+  - **Contact:** ml-team@company.com
+  - **Last Updated:** 2024-01-15
+  
+  ## Intended Use
+  
+  ### Primary Use Cases
+  
+  - Identify customers at risk of churning within 30 days
+  - Prioritize retention outreach by customer success team
+  - Segment marketing campaigns based on churn risk
+  ...
+
+============================================================
+Demo 3: JSON Export
+============================================================
+
+  JSON output: 3132 characters
+  Top-level keys: ['model_details', 'intended_use', 'training_data', 'performance', 'limitations', 'ethical_considerations', 'recommendations']
+
+  Performance metrics (from JSON):
+    AUC-ROC: 0.847
+    Precision@50%recall: 0.68
+    F1: 0.72
+
+  Subgroup metrics:
+    Enterprise: AUC-ROC = 0.792
+    SMB: AUC-ROC = 0.861
+    Consumer: AUC-ROC = 0.853
+
+  Confidence intervals:
+    AUC-ROC: [0.841, 0.853]
+    Precision: [0.650, 0.710]
+
+============================================================
+Demo 4: Completeness Validation
+============================================================
+
+  Section                     Status
+  ————————————————————————— ————————
+  model_details               ✓ PASS
+  intended_use                ✓ PASS
+  out_of_scope                ✓ PASS
+  training_data               ✓ PASS
+  performance_metrics         ✓ PASS
+  subgroup_analysis           ✓ PASS
+  limitations                 ✓ PASS
+  ethical_considerations      ✓ PASS
+  recommendations             ✓ PASS
+
+  Result: 9/9 sections complete
+  Status: Model card is complete and ready for review
+
+============================================================
+Demo 5: Incomplete Card Validation
+============================================================
+
+  Validating an incomplete model card for 'Quick Prototype':
+
+  Section                     Status
+  ————————————————————————— ————————
+  model_details               ✓ PASS
+  intended_use                ✗ FAIL
+  out_of_scope                ✗ FAIL
+  training_data               ✗ FAIL
+  performance_metrics         ✓ PASS
+  subgroup_analysis           ✗ FAIL
+  limitations                 ✗ FAIL
+  ethical_considerations      ✗ FAIL
+  recommendations             ✗ FAIL
+
+  Missing sections: ['intended_use', 'out_of_scope', 'training_data', 'subgroup_analysis', 'limitations', 'ethical_considerations', 'recommendations']
+  Action: Fill these sections before deploying to production
+
+============================================================
+Demo 6: Subgroup Performance Analysis
+============================================================
+
+  Analyzing performance disparities across subgroups:
+
+  AUC-ROC:
+    Overall: 0.847
+      Enterprise: 0.792 (gap: -0.055)  ← BELOW
+             SMB: 0.861 (gap: +0.014)
+        Consumer: 0.853 (gap: +0.006)
+    Spread: 0.069 (best: SMB, worst: Enterprise)
+
+  Precision@50%recall:
+    Overall: 0.680
+      Enterprise: 0.540 (gap: -0.140)  ← BELOW
+             SMB: 0.710 (gap: +0.030)
+        Consumer: 0.690 (gap: +0.010)
+    Spread: 0.170 (best: SMB, worst: Enterprise)
+
+  F1:
+    Overall: 0.720
+      Enterprise: 0.610 (gap: -0.110)  ← BELOW
+             SMB: 0.740 (gap: +0.020)
+        Consumer: 0.730 (gap: +0.010)
+    Spread: 0.130 (best: SMB, worst: Enterprise)
+
+  Key insight: Disaggregated metrics reveal performance
+  disparities hidden by overall averages.
+============================================================
+MWE Complete — Model card generation demonstrated!
+============================================================

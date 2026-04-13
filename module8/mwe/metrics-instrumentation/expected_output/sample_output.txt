@@ -1,0 +1,101 @@
+============================================================
+Metrics Instrumentation MWE — Prometheus for ML Services
+============================================================
+============================================================
+Demo 1: Simulating ML Inference Traffic
+============================================================
+
+  Simulating 200 inference requests for model v2.1.0...
+  Completed: 193 successes, 7 errors
+  Error rate: 3.5%
+
+============================================================
+Demo 2: Setting Drift Gauges
+============================================================
+
+  Setting feature drift PSI gauges:
+
+  Feature                   PSI Status
+  ———————————————————— ———————— ———————————————
+  age                      0.18 investigate
+  income                   0.05 no drift
+  credit_score             0.02 no drift
+  transaction_count        0.31 ACTION NEEDED
+
+  Model accuracy gauge set to 0.847
+
+============================================================
+Demo 3: Reading Metrics from Registry
+============================================================
+
+  Querying in-memory metric values:
+
+  Counters:
+    ml_inference_requests_total{status='success'}: 193
+    ml_inference_requests_total{status='error'}:   7
+    ml_predictions_total{class='positive'}: 62
+    ml_predictions_total{class='negative'}: 131
+
+  Histograms:
+    Average latency: 160.2 ms
+    Total observations: 200
+    Average confidence: 0.805
+
+  Gauges:
+    ml_feature_drift_psi{feature='age'}: 0.18
+    ml_feature_drift_psi{feature='transaction_count'}: 0.31
+    ml_model_accuracy{model='v2.1.0'}: 0.847
+
+============================================================
+Demo 4: Prometheus Exposition Format (what /metrics returns)
+============================================================
+
+  Showing first 59 of 59 lines:
+
+  # HELP ml_inference_requests_total Total number of inference requests
+  # TYPE ml_inference_requests_total counter
+  ml_inference_requests_total{model_version="v2.1.0",status="success"} 193.0
+  ml_inference_requests_total{model_version="v2.1.0",status="error"} 7.0
+  ...
+  # HELP ml_inference_latency_seconds Inference request latency in seconds
+  # TYPE ml_inference_latency_seconds histogram
+  ml_inference_latency_seconds_bucket{le="0.01",model_version="v2.1.0"} 2.0
+  ml_inference_latency_seconds_bucket{le="0.05",model_version="v2.1.0"} 16.0
+  ml_inference_latency_seconds_bucket{le="0.1",model_version="v2.1.0"} 61.0
+  ...
+  # HELP ml_feature_drift_psi Current PSI drift score for input features
+  # TYPE ml_feature_drift_psi gauge
+  ml_feature_drift_psi{feature_name="age"} 0.18
+  ml_feature_drift_psi{feature_name="transaction_count"} 0.31
+  ...
+
+  Total exposition output: 3946 bytes, 59 lines
+  This is exactly what Prometheus would scrape from /metrics
+
+============================================================
+Demo 5: Metric Type Selection Guide
+============================================================
+
+  Metric Type    When to Use                     ML Examples
+  ———————————    ——————————————————————————       ————————————————————————
+  Counter        Monotonically increasing         Request count, error count,
+                 cumulative totals                prediction count by class
+
+  Histogram      Distribution of values;          Inference latency, confidence
+                 need percentiles (p50/p95/p99)   scores, token counts
+
+  Gauge          Point-in-time snapshot;           Drift PSI, model accuracy,
+                 value can go up or down           GPU utilization, queue depth
+
+  Summary        Similar to Histogram but          (Less common in ML; prefer
+                 calculates quantiles client-side  Histogram for Prometheus)
+
+  Key decisions:
+    • Use Counter for "how many?" → rate() in PromQL gives per-second rates
+    • Use Histogram for "how long/big?" → histogram_quantile() gives percentiles
+    • Use Gauge for "what is it now?" → direct value, no rate() needed
+    • Add labels for segmentation, but avoid high-cardinality labels (no user IDs)
+
+============================================================
+MWE Complete — Prometheus metric instrumentation demonstrated!
+============================================================

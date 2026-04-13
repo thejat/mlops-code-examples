@@ -1,0 +1,116 @@
+============================================================
+Audit Trail & Lineage MWE — ML Governance Infrastructure
+============================================================
+============================================================
+Demo 1: ML Model Lifecycle Audit Trail
+============================================================
+
+  [1] data_ingested: customer_transactions_v3
+  [2] model_trained: churn_predictor_v2.1.0
+  [3] model_deployed: churn_predictor_v2.1.0
+  [4] prediction_made: confidence=0.87
+  [5] prediction_made: confidence=0.92
+  [6] prediction_made: confidence=0.65
+  [7] config_changed: threshold 0.5 → 0.45
+  [8] alert_triggered: PSI=0.23 > threshold
+
+  Total events logged: 8
+
+============================================================
+Demo 2: Reading the Audit Log
+============================================================
+
+  Seq  Event Type                Actor                     Resource
+  ———  ————————————————————————— ————————————————————————— —————————————————————————
+    0  data_ingested             data-pipeline             customer_transactions_v3
+    1  model_trained             ml-engineer@company.com   churn_predictor_v2.1.0
+    2  model_deployed            ml-engineer@company.com   churn_predictor_v2.1.0
+    3  prediction_made           user_1000                 req_xxxxxxxx
+    4  prediction_made           user_1001                 req_xxxxxxxx
+    5  prediction_made           user_1002                 req_xxxxxxxx
+    6  config_changed            ops-team@company.com      churn_predictor_config
+    7  alert_triggered           monitoring-system         drift_alert_age
+
+  Log file size: 4248 bytes
+  Format: JSON Lines (one JSON object per line)
+
+============================================================
+Demo 3: Lineage Chain Traversal
+============================================================
+
+  Tracing from prediction back to data source:
+
+    [data_ingested] customer_transactions_v3
+      rows: 450000
+  →   [model_trained] churn_predictor_v2.1.0
+        AUC: 0.847
+  →     [model_deployed] churn_predictor_v2.1.0
+          endpoint: https://api.company.com/predict/churn
+  →       [prediction_made] req_xxxxxxxx
+            prediction: retain, confidence: 0.87
+
+  Lineage depth: 4 events
+  Key insight: Every prediction traces back to its training data
+
+============================================================
+Demo 4: Log Integrity Verification
+============================================================
+
+  Entries checked: 8
+  Integrity valid: ✓ YES
+
+============================================================
+Demo 5: Tamper Detection
+============================================================
+
+  Creating a copy of the log and modifying one entry...
+  Tampered entry 2: changed actor and environment
+
+  Verification of tampered log:
+  Integrity valid: ✗ NO
+  Errors detected: 1
+    - Event hash mismatch at sequence 2: event content was modified ...
+
+  The hash chain caught the modification because the
+  tampered entry's event_hash no longer matches the chain.
+
+============================================================
+Demo 6: Raw Log Format (JSON Lines)
+============================================================
+
+  First entry (formatted):
+
+  {
+      "sequence": 0,
+      "event": {
+          "event_id": "data_xxxxxxxx",
+          "event_type": "data_ingested",
+          "timestamp": "2024-01-10T09:00:00",
+          "actor": "data-pipeline",
+          "resource_type": "dataset",
+          "resource_id": "customer_transactions_v3",
+          "action": "ingest_training_data",
+          "details": {
+              "source": "s3://data-lake/transactions/",
+              "rows": 450000,
+              "columns": 47,
+              "hash": "a1b2c3d4e5f6",
+              "date_range": "2020-01-01 to 2023-12-31"
+          },
+          "parent_event_id": null
+      },
+      "event_hash": "xxxxxxxxxxxxxxxx",
+      "chain_hash": "xxxxxxxxxxxxxxxx",
+      "previous_hash": "0000000000000000"
+  }
+
+  Each line is a self-contained JSON object with:
+    • sequence — monotonic counter for ordering
+    • event — the full audit event record
+    • event_hash — SHA-256 of event content (16 chars)
+    • chain_hash — SHA-256(previous_hash + event_hash)
+    • previous_hash — chain_hash of preceding entry
+
+============================================================
+MWE Complete — Audit trail and lineage demonstrated!
+============================================================

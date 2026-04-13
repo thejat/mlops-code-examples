@@ -1,0 +1,125 @@
+============================================================
+Statistical Testing MWE — Multiple Comparisons for ML
+============================================================
+============================================================
+Demo 1: Two-Proportion Z-Test (Conversion Rate)
+============================================================
+
+  Experiment: Model v2.0 vs v1.5
+  Metric: Conversion rate (binary)
+
+  Variant             N   Conversions     Rate
+  ———————————— ———————— ————————————— ————————
+  Control         10000           973   9.73%
+  Treatment       10000          1054  10.54%
+
+  Relative lift: +8.32%
+  Z-statistic: 1.8979
+  P-value: 0.057715
+  95% CI: [-0.0003, +0.0165]
+  Significant (α=0.05): No
+
+============================================================
+Demo 2: Welch's T-Test (Continuous Metrics)
+============================================================
+
+  Experiment: RAG top-k=5 vs top-k=3
+  Metric: Mean retrieval similarity score (continuous)
+
+  Variant             N     Mean      Std
+  ———————————— ———————— ———————— ————————
+  Control          5000   0.7208   0.1495
+  Treatment        5000   0.7586   0.1414
+
+  Mean difference: +0.0378
+  Relative lift: +5.24%
+  T-statistic: 12.9800
+  P-value: 0.000000
+  95% CI: [+0.0321, +0.0435]
+  Significant (α=0.05): Yes
+
+  Key insight: For continuous metrics (latency, similarity scores),
+  use t-test instead of the two-proportion z-test.
+
+============================================================
+Demo 3: Bonferroni Correction (Multiple Comparisons)
+============================================================
+
+  Testing 3 metrics simultaneously:
+
+  Metric                    P-value     α=0.05  Significant?
+  —————————————————————— —————————— —————————— —————————————
+  conversion_rate          0.019112      0.050         Yes ✓
+  click_through_rate       0.012441      0.050         Yes ✓
+  engagement_score         0.533376      0.050            No
+
+  After Bonferroni correction (α/3 = 0.0167):
+
+  Metric                    P-value     Adj. α   Original  Corrected
+  —————————————————————— —————————— —————————— —————————— ——————————
+  conversion_rate          0.019112     0.0167        Yes       No ✗
+  click_through_rate       0.012441     0.0167        Yes      Yes ✓
+  engagement_score         0.533376     0.0167         No       No ✗
+
+  ⚠ 1 metric(s) lost significance after correction
+  This prevents false discoveries from testing multiple metrics
+
+============================================================
+Demo 4: Confidence Interval Decision Framework
+============================================================
+
+  Scenario                        P-value                 95% CI Decision
+  —————————————————————————————— ———————— —————————————————————— ————————————————————
+  Strong positive effect           0.0000     [+0.0124, +0.0264] SHIP TREATMENT
+  Weak positive (underpowered)     0.4338     [-0.0210, +0.0090] EXTEND EXPERIMENT
+  No effect (null result)          0.1156     [-0.0121, +0.0013] NO DIFFERENCE
+  Negative effect                  0.0009     [-0.0178, -0.0046] KEEP CONTROL
+
+  Decision rules:
+    CI entirely > 0 & significant → SHIP TREATMENT
+    CI entirely < 0 & significant → KEEP CONTROL
+    CI wide (spans 0, range > 2%) → EXTEND EXPERIMENT
+    CI narrow around 0            → NO DIFFERENCE
+
+============================================================
+Demo 5: Guardrail Metric Checks
+============================================================
+
+  Guardrail metrics must not degrade beyond threshold:
+
+  Metric                Control  Treatment   Change  Max Deg     Status
+  —————————————————— —————————— —————————— ———————— ———————— ——————————
+  p99_latency_ms       147.7499   158.9458   +7.6%    +10%     ✓ PASS
+  error_rate             0.0193     0.0240  +24.4%    +50%     ✓ PASS
+  cache_hit_rate         0.6527     0.6242   -4.4%     +5%     ✓ PASS
+
+  ✓ All guardrails passed — safe to ship if primary metric significant
+
+============================================================
+Demo 6: Integrated Decision Framework
+============================================================
+
+  ┌──────────────────────────────────────────────────────┐
+  │              EXPERIMENT RESULTS SUMMARY              │
+  ├──────────────────────────────────────────────────────┤
+  │ Primary: conversion_rate      lift=+4.70% p=0.2364   │
+  │ Secondary: engagement_score   lift=+2.81% p=0.0000   │
+  │ Guardrail: p99_latency_ms     PASS (+2.2%)           │
+  │                                                      │
+  │ Bonferroni α: 0.0250 (2 tests)                       │
+  │ Primary significant (corrected):   No                │
+  │ Secondary significant (corrected):  Yes              │
+  │                                                      │
+  │ Decision: EXTEND EXPERIMENT                          │
+  │ Insufficient evidence — collect more data            │
+  └──────────────────────────────────────────────────────┘
+
+  The decision integrates:
+    1. Primary metric significance (with Bonferroni correction)
+    2. Direction of effect (positive lift required)
+    3. Guardrail compliance (no degradation beyond threshold)
+    4. Confidence interval width (practical significance)
+
+============================================================
+MWE Complete — Statistical testing for ML demonstrated!
+============================================================

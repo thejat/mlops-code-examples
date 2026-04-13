@@ -1,0 +1,117 @@
+============================================================
+Bias & Fairness Assessment MWE — Quantitative Fairness Metrics
+============================================================
+============================================================
+Demo 1: Synthetic Loan Approval Dataset
+============================================================
+
+  Dataset: 5,000 applicants
+  Overall approval rate (ground truth): 60.1%
+  Model approval rate (predictions):    61.8%
+
+  Gender distribution:
+    female      :  2393 applicants, approval rate: 60.1%
+    male        :  2405 applicants, approval rate: 65.1%
+    non_binary  :   202 applicants, approval rate: 42.6%
+
+  Age group distribution:
+    18-25       :  1014 applicants, approval rate: 52.2%
+    26-40       :  1844 applicants, approval rate: 65.6%
+    41-55       :  1424 applicants, approval rate: 62.9%
+    56+         :   718 applicants, approval rate: 63.2%
+
+============================================================
+Demo 2: Per-Group Classification Metrics (Gender)
+============================================================
+
+  Group             N  Select%   Base%    TPR    FPR    Acc
+  ———————————— —————— ———————— ——————— —————— —————— ——————
+  female         2393   60.1%  61.3%  0.981  0.000  0.988
+  male           2405   65.1%  59.3%  1.000  0.141  0.943
+  non_binary      202   42.6%  55.0%  0.775  0.000  0.876
+
+============================================================
+Demo 3: Demographic Parity (Gender)
+============================================================
+
+  Reference group: male
+  Threshold: 0.80 (80% rule)
+
+  Group         Selection Rate   Parity Ratio     Status
+  ———————————— ——————————————— —————————————— ——————————
+  female                60.1%          0.923     ✓ PASS
+  male                  65.1%          1.000     ✓ PASS
+  non_binary            42.6%          0.654     ✗ FAIL
+
+  ⚠ Demographic parity violated for: ['non_binary']
+  These groups receive positive outcomes at < 80% the rate of 'male'
+
+============================================================
+Demo 4: Equalized Odds (Gender)
+============================================================
+
+  Reference group: male
+  Acceptable gap threshold: 0.05
+
+  Group             TPR      FPR   TPR Gap   FPR Gap     Status
+  ———————————— ———————— ———————— ————————— ————————— ——————————
+  female          0.981    0.000     0.019     0.141     ✗ FAIL
+  male            1.000    0.141     0.000     0.000     ✓ PASS
+  non_binary      0.775    0.000     0.225     0.141     ✗ FAIL
+
+  Equalized odds requires both TPR and FPR to be similar
+  across groups. Large gaps indicate the model is more
+  accurate for some groups than others.
+
+============================================================
+Demo 5: Disparate Impact Analysis (Age Groups)
+============================================================
+
+  Reference group: 26-40
+  Reference selection rate: 65.6%
+  Threshold: 80%
+
+  Age Group     Selection Rate   DI Ratio     Status
+  ———————————— ——————————————— —————————— ——————————
+  18-25                 52.2%      0.795     ✗ FAIL
+  26-40                 65.6%      1.000     ✓ PASS
+  41-55                 62.9%      0.959     ✓ PASS
+  56+                   63.2%      0.964     ✓ PASS
+
+  ⚠ DISPARATE IMPACT DETECTED
+  Violations:
+    - 18-25: 79.5% of reference rate (below 80% threshold)
+
+============================================================
+Demo 6: Combined Fairness Report
+============================================================
+
+  Fairness Assessment Summary
+  ==================================================
+
+  Check                                   Result
+  ——————————————————————————————————— ——————————
+  Gender: Demographic Parity              ✗ FAIL
+  Gender: Equalized Odds                  ✗ FAIL
+  Gender: Disparate Impact (80%)          ✗ FAIL
+  Age: Demographic Parity                 ✗ FAIL
+  Age: Disparate Impact (80%)             ✗ FAIL
+
+  Recommendations:
+  ⚠ 5 fairness check(s) failed:
+    • Gender demographic parity
+    • Gender equalized odds
+    • Gender disparate impact
+    • Age demographic parity
+    • Age disparate impact
+
+  Suggested actions:
+    1. Investigate features correlated with protected attributes
+    2. Consider threshold adjustment per group (with legal review)
+    3. Add fairness constraints to model training objective
+    4. Document findings in model card limitations section
+    5. Add to risk register with review triggers
+
+============================================================
+MWE Complete — Bias and fairness assessment demonstrated!
+============================================================
