@@ -1,0 +1,64 @@
+$ docker compose up --build
+[+] Building 12.3s (8/8) FINISHED
+ => [app internal] load build definition from Dockerfile
+ => [app] FROM python:3.11-slim
+ => [app] COPY requirements.txt .
+ => [app] RUN pip install --no-cache-dir -r requirements.txt
+ => [app] COPY app.py .
+[+] Running 3/3
+ ✔ Container ml-app       Started
+ ✔ Container prometheus    Started
+ ✔ Container grafana       Started
+
+ml-app  | ML service started — model v2.1.0
+ml-app  | Metrics available at http://localhost:8000/metrics
+ml-app  | INFO:     Uvicorn running on http://0.0.0.0:8000
+
+================================================================================
+After startup, verify the stack:
+================================================================================
+
+$ curl http://localhost:8000/health
+{"status":"healthy","model_version":"v2.1.0"}
+
+$ curl -X POST "http://localhost:8000/simulate-traffic?n=200"
+{"generated":200,"successes":191,"errors":9,"error_rate":"4.5%"}
+
+$ curl -s http://localhost:8000/metrics | head -20
+# HELP ml_inference_requests_total Total inference requests
+# TYPE ml_inference_requests_total counter
+ml_inference_requests_total{model_version="v2.1.0",status="error"} 9.0
+ml_inference_requests_total{model_version="v2.1.0",status="success"} 191.0
+# HELP ml_predictions_total Total predictions by class
+# TYPE ml_predictions_total counter
+ml_predictions_total{model_version="v2.1.0",predicted_class="negative"} 134.0
+ml_predictions_total{model_version="v2.1.0",predicted_class="positive"} 57.0
+# HELP ml_inference_latency_seconds Inference latency in seconds
+# TYPE ml_inference_latency_seconds histogram
+ml_inference_latency_seconds_bucket{le="0.01",model_version="v2.1.0"} 2.0
+ml_inference_latency_seconds_bucket{le="0.025",model_version="v2.1.0"} 5.0
+ml_inference_latency_seconds_bucket{le="0.05",model_version="v2.1.0"} 18.0
+ml_inference_latency_seconds_bucket{le="0.1",model_version="v2.1.0"} 72.0
+ml_inference_latency_seconds_bucket{le="0.25",model_version="v2.1.0"} 186.0
+ml_inference_latency_seconds_bucket{le="0.5",model_version="v2.1.0"} 191.0
+ml_inference_latency_seconds_bucket{le="1.0",model_version="v2.1.0"} 196.0
+ml_inference_latency_seconds_bucket{le="2.5",model_version="v2.1.0"} 200.0
+ml_inference_latency_seconds_bucket{le="5.0",model_version="v2.1.0"} 200.0
+ml_inference_latency_seconds_bucket{le="+Inf",model_version="v2.1.0"} 200.0
+
+================================================================================
+Grafana: Open http://localhost:3000  (admin / admin)
+  → Dashboards → ML Model Monitoring
+  → 9 panels auto-populated with live data
+
+Prometheus: Open http://localhost:9090
+  → Try: rate(ml_inference_requests_total[1m])
+  → Try: histogram_quantile(0.95, sum(rate(ml_inference_latency_seconds_bucket[5m])) by (le))
+  → Try: ml_feature_drift_psi
+================================================================================
+
+$ docker compose down
+[+] Running 3/3
+ ✔ Container grafana       Removed
+ ✔ Container prometheus    Removed
+ ✔ Container ml-app        Removed
